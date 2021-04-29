@@ -5,8 +5,7 @@ export const LOGIN = gql`
 		login(email: $email, password: $password) {
 			email 
 			_id
-			firstName
-			lastName
+			name
 			password
 			initials
 		}
@@ -14,12 +13,11 @@ export const LOGIN = gql`
 `;
 
 export const REGISTER = gql`
-	mutation Register($email: String!, $password: String!, $firstName: String!, $lastName: String!) {
-		register(email: $email, password: $password, firstName: $firstName, lastName: $lastName) {
+	mutation Register($email: String!, $password: String!, $name: String!) {
+		register(email: $email, password: $password, name: $name) {
 			email
 			password
-			firstName
-			lastName
+			name
 		}
 	}
 `;

@@ -5,7 +5,7 @@ import { useMutation }    	from '@apollo/client';
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol } from 'wt-frontend';
 
 const CreateAccount = (props) => {
-	const [input, setInput] = useState({ email: '', password: '', firstName: '', lastName: '' });
+	const [input, setInput] = useState({ email: '', password: '', name: ''});
 	const [loading, toggleLoading] = useState(false);
 	const [Register] = useMutation(REGISTER);
 
@@ -54,21 +54,10 @@ const CreateAccount = (props) => {
 			{
 				loading ? <div />
 					: <div>
-						<WRow className="modal-col-gap signup-modal">
-							<WCol size="6">
-								<WInput 
-									className="" onBlur={updateInput} name="firstName" labelAnimation="up" 
-									barAnimation="solid" labelText="First Name" wType="outlined" inputType="text" 
-								/>
-							</WCol>
-							<WCol size="6">
-								<WInput 
-									className="" onBlur={updateInput} name="lastName" labelAnimation="up" 
-									barAnimation="solid" labelText="Last Name" wType="outlined" inputType="text" 
-								/>
-							</WCol>
-						</WRow>
-
+						<WInput 
+							className="modal-input" onBlur={updateInput} name="name" labelAnimation="up" 
+							barAnimation="solid" labelText="Name" wType="outlined" inputType="text" 
+						/>
 						<div className="modal-spacer">&nbsp;</div>
 						<WInput 
 							className="modal-input" onBlur={updateInput} name="email" labelAnimation="up" 
