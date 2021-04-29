@@ -276,7 +276,6 @@ const Homescreen = (props) => {
 					</ul>
 				</WNavbar>
 			</WLHeader>
-
 			<WLSide side="left">
 				<WSidebar>
 					{
