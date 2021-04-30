@@ -46,7 +46,7 @@ const CreateAccount = (props) => {
 			<WModal visible={true}>
 				<WMHeader>
 					<div className="modal-header" onClose={() => props.setShowCreate(false)}>
-						Sign Up
+						Create a new account
 						<div className="modal-close" onClick={()=>props.setShowCreate()}>x</div>
 					</div>
 				</WMHeader>
@@ -72,9 +72,19 @@ const CreateAccount = (props) => {
 			}
 			</WMMain>
 			<WMFooter>
-				<WButton className="modal-button" onClick={handleCreateAccount} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
-					Submit
-				</WButton>
+				<WRow>
+					<WCol size="5">
+						<WButton className="modal-button" onClick={handleCreateAccount} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+							Submit
+						</WButton>
+					</WCol>
+					<WCol size="2"></WCol>
+					<WCol size="5">
+						<WButton className="modal-button" onClick={()=>props.setShowCreate()} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+							Cancel
+						</WButton>
+					</WCol>
+				</WRow>
 			</WMFooter>
 			</WModal>
 		</div>

@@ -2,7 +2,7 @@ import React, { useState } 	from 'react';
 import { LOGIN } 			from '../../cache/mutations';
 import { useMutation }    	from '@apollo/client';
 
-import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput } from 'wt-frontend';
+import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol} from 'wt-frontend';
 
 const Login = (props) => {
 	const [input, setInput] = useState({ email: '', password: '' });
@@ -66,9 +66,19 @@ const Login = (props) => {
 			}
 			</WMMain>
 			<WMFooter>
-				<WButton className="modal-button" onClick={handleLogin} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
-					Login
-				</WButton>
+				<WRow>
+					<WCol size="5">
+						<WButton className="modal-button" onClick={handleLogin} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+							Login
+						</WButton>
+					</WCol>
+					<WCol size="2"></WCol>
+					<WCol size="5">
+						<WButton className="modal-button" onClick={()=>props.setShowLogin()} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+							Cancel
+						</WButton>
+					</WCol>
+				</WRow>
 			</WMFooter>
 			</WModal>
 		</div>
