@@ -1,14 +1,14 @@
 import React, { useState } 	from 'react';
 import { REGISTER }			from '../../cache/mutations';
 import { useMutation }    	from '@apollo/client';
-
+import { useHistory } from 'react-router-dom'
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol } from 'wt-frontend';
 
 const CreateAccount = (props) => {
 	const [input, setInput] = useState({ email: '', password: '', name: ''});
 	const [loading, toggleLoading] = useState(false);
 	const [Register] = useMutation(REGISTER);
-
+	let history = useHistory()
 	
 	const updateInput = (e) => {
 		const { name, value } = e.target;
@@ -34,20 +34,24 @@ const CreateAccount = (props) => {
 			}
 			else {
 				props.fetchUser();
+				navHome()
 			}
-			props.setShowCreate(false);
+			// props.setShowCreate(false);
 
 		};
 	};
 
+	const navHome = () => {
+		history.push('/')
+	}
+
 	return (
         // Replace div with WModal
 		<div>
-			<WModal visible={true}>
 				<WMHeader>
-					<div className="modal-header" onClose={() => props.setShowCreate(false)}>
+					<div className="modal-header">
 						Create a new account
-						<div className="modal-close" onClick={()=>props.setShowCreate()}>x</div>
+						<div className="modal-close" onClick={navHome}>x</div>
 					</div>
 				</WMHeader>
 				<WMMain>
@@ -80,13 +84,12 @@ const CreateAccount = (props) => {
 					</WCol>
 					<WCol size="2"></WCol>
 					<WCol size="5">
-						<WButton className="modal-button" onClick={()=>props.setShowCreate()} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+						<WButton className="modal-button" onClick={navHome} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
 							Cancel
 						</WButton>
 					</WCol>
 				</WRow>
 			</WMFooter>
-			</WModal>
 		</div>
 	);
 }

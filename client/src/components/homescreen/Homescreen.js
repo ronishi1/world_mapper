@@ -5,6 +5,7 @@ import MainContents 					from '../main/MainContents';
 import SidebarContents 					from '../sidebar/SidebarContents';
 import Login 							from '../modals/Login';
 import Delete 							from '../modals/Delete';
+import UpdateAccount					from '../modals/UpdateAccount';
 import CreateAccount 					from '../modals/CreateAccount';
 import { GET_DB_TODOS } 				from '../../cache/queries';
 import * as mutations 					from '../../cache/mutations';
@@ -26,6 +27,7 @@ const Homescreen = (props) => {
 	const [showDelete, toggleShowDelete] 	= useState(false);
 	const [showLogin, toggleShowLogin] 		= useState(false);
 	const [showCreate, toggleShowCreate] 	= useState(false);
+	const [showUpdateAccount, toggleShowUpdateAccount] 	= useState(false);
 	const [description, toggleDescription] = useState(false);
 	const [date, toggleDate] = useState(false);	
 	const [status, toggleStatus] = useState(false);	
@@ -47,7 +49,7 @@ const Homescreen = (props) => {
 	if(data) { todolists = data.getAllTodos; }
 
 	const auth = props.user === null ? false : true;
-
+	
 	const refetchTodos = async (refetch) => {
 		const { loading, error, data } = await refetch();
 		if (data) {
@@ -227,19 +229,29 @@ const Homescreen = (props) => {
 	const setShowLogin = () => {
 		toggleShowDelete(false);
 		toggleShowCreate(false);
+		toggleShowUpdateAccount(false)
 		toggleShowLogin(!showLogin);
 	};
 
 	const setShowCreate = () => {
 		toggleShowDelete(false);
 		toggleShowLogin(false);
+		toggleShowUpdateAccount(false)
 		toggleShowCreate(!showCreate);
 	};
 
 	const setShowDelete = () => {
 		toggleShowCreate(false);
 		toggleShowLogin(false);
+		toggleShowUpdateAccount(false)
 		toggleShowDelete(!showDelete)
+	}
+
+	const setShowUpdateAccount = () => {
+		toggleShowCreate(false);
+		toggleShowLogin(false);
+		toggleShowDelete(false)
+		toggleShowUpdateAccount(!showUpdateAccount)
 	}
 
 	let handleKeyDown = (e) => {
@@ -260,7 +272,7 @@ const Homescreen = (props) => {
 
 	return (
 		<WLayout wLayout="header-lside">
-			<WLHeader>
+			{/* <WLHeader>
 				<WNavbar color="colored">
 					<ul>
 						<WNavItem>
@@ -269,14 +281,14 @@ const Homescreen = (props) => {
 					</ul>
 					<ul>
 						<NavbarOptions
-							fetchUser={props.fetchUser} auth={auth} 
-							setShowCreate={setShowCreate} setShowLogin={setShowLogin}
+							fetchUser={props.fetchUser} auth={auth} user={props.user}
+							setShowCreate={setShowCreate} setShowLogin={setShowLogin} setShowUpdateAccount={setShowUpdateAccount}
 							refetchTodos={refetch} setActiveList={setActiveList}
 						/>
 					</ul>
 				</WNavbar>
-			</WLHeader>
-			<WLSide side="left">
+			</WLHeader> */}
+			{/* <WLSide side="left">
 				<WSidebar>
 					{
 						activeList ?
@@ -310,7 +322,7 @@ const Homescreen = (props) => {
 							<div className="container-secondary" />
 				}
 
-			</WLMain>
+			</WLMain> */}
 
 			{
 				showDelete && (<Delete deleteList={deleteList} activeid={activeList._id} setShowDelete={setShowDelete} />)
@@ -323,6 +335,14 @@ const Homescreen = (props) => {
 			{
 				showLogin && (<Login fetchUser={props.fetchUser} refetchTodos={refetch}setShowLogin={setShowLogin} />)
 			}
+
+			{
+				showUpdateAccount && (<UpdateAccount setShowUpdateAccount={setShowUpdateAccount}></UpdateAccount>)
+			}
+
+			{/* {
+				!showUpdateAccount && !showLogin && 
+			} */}
 
 		</WLayout>
 	);

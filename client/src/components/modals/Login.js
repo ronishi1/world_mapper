@@ -1,7 +1,7 @@
 import React, { useState } 	from 'react';
 import { LOGIN } 			from '../../cache/mutations';
 import { useMutation }    	from '@apollo/client';
-
+import { useHistory } from 'react-router-dom'
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol} from 'wt-frontend';
 
 const Login = (props) => {
@@ -10,6 +10,7 @@ const Login = (props) => {
 	const [showErr, displayErrorMsg] = useState(false);
 	const errorMsg = "Email/Password not found.";
 	const [Login] = useMutation(LOGIN);
+	let history = useHistory();
 
 	const updateInput = (e) => {
 		const { name, value } = e.target;
@@ -27,22 +28,24 @@ const Login = (props) => {
 		}
 		if (data) {
 			props.fetchUser();
-			props.refetchTodos();
+			navHome()
+			// props.refetchTodos();
 			toggleLoading(false)
-			props.setShowLogin(false)
+			// props.setShowLogin(false)
 		};
 	};
 
-
+	const navHome = () => {
+		history.push('/')
+	}
 	return (
         // Replace div with WModal
 
 		<div>
-			<WModal visible={true}>
-				<WMHeader>
-				<div className="modal-header" onClose={() => props.setShowLogin(false)}>
+			<WMHeader>
+				<div className="modal-header">
 					Login
-					<div className="modal-close" onClick={()=>props.setShowLogin()}>x</div>
+					<div className="modal-close" onClick={navHome}>x</div>
 				</div>
 				</WMHeader>
 
@@ -74,13 +77,12 @@ const Login = (props) => {
 					</WCol>
 					<WCol size="2"></WCol>
 					<WCol size="5">
-						<WButton className="modal-button" onClick={()=>props.setShowLogin()} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+						<WButton className="modal-button" onClick={navHome} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
 							Cancel
 						</WButton>
 					</WCol>
 				</WRow>
 			</WMFooter>
-			</WModal>
 		</div>
 	);
 }

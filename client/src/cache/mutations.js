@@ -21,6 +21,12 @@ export const REGISTER = gql`
 		}
 	}
 `;
+
+export const UPDATE_ACCOUNT = gql`
+	mutation UpdateAccount($email: String!, $password: String!, $name: String!, $passwordFlag: Boolean!) {
+		updateAccount(email:$email, pasword:$password, name:$name, passwordFlag:$passwordFlag)	
+	}
+`;
 export const LOGOUT = gql`
 	mutation Logout {
 		logout 
