@@ -1,45 +1,49 @@
 import React, { useState } 	from 'react';
-import { LOGIN } 			from '../../cache/mutations';
+import { UPDATE_ACCOUNT } 			from '../../cache/mutations';
 import { useMutation }    	from '@apollo/client';
 import { useHistory } from 'react-router-dom'
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol} from 'wt-frontend';
 
 const UpdateAccount = (props) => {
-	const [input, setInput] = useState({ email: '', password: '' });
+	const [input, setInput] = useState({ name: props.user.name, email: props.user.email, password: '' ,initEmail: props.user.email});
 	const [loading, toggleLoading] = useState(false);
 	const [showErr, displayErrorMsg] = useState(false);
 	const errorMsg = "Email/Password not found.";
-	const [Login] = useMutation(LOGIN);
+	const [UpdateAccount] = useMutation(UPDATE_ACCOUNT);
     let history = useHistory();
 
+    
 	const updateInput = (e) => {
 		const { name, value } = e.target;
 		const updated = { ...input, [name]: value };
 		setInput(updated);
-	}
+        console.log(input)
+    }
 
+    
 	const handleUpdateAccount = async (e) => {
 		for (let field in input) {
 			if (!input[field]) {
-				alert('All fields must be filled out to register');
+				alert('All fields must be filled out to update account information');
 				return;
 			}
 		}
-		// const { loading, error, data } = await Register({ variables: { ...input } });
-		// if (loading) { toggleLoading(true) };
-		// if (error) { return `Error: ${error.message}` };
-		// if (data) {
-		// 	console.log(data)
-		// 	toggleLoading(false);
-		// 	if(data.register.email === 'already exists') {
-		// 		alert('User with that email already registered');
-		// 	}
-		// 	else {
-		// 		props.fetchUser();
-		// 	}
-		// 	props.setShowCreate(false);
+		const { loading, error, data } = await UpdateAccount({ variables: { ...input } });
+		if (loading) { toggleLoading(true) };
+		if (error) { return `Error: ${error.message}` };
+		if (data) {
+			console.log(data)
+			toggleLoading(false);
+			if(data.updateAccount.email === 'already exists') {
+				alert('User with that email already exists');
+			}
+			else {
+				props.fetchUser();
+			}
+			// props.setShowCreate(false);
+            navHome()
 
-		// };
+		};
 	};
     const navHome = () =>{
         history.push('/')
@@ -58,18 +62,11 @@ const UpdateAccount = (props) => {
 
 			<WMMain>
                 <div className="main-login-modal">
-                    <WInput className="modal-input" onBlur={updateInput} name='name' labelAnimation="up" barAnimation="solid" labelText="Name" wType="outlined" inputType='name' />
+                    <WInput className="modal-input" onChange={updateInput} onBlur={updateInput} name='name' labelAnimation="up" barAnimation="solid" labelText="Name" wType="outlined" inputType='name' value={input.name}/>
                     <div className="modal-spacer">&nbsp;</div>
-                    <WInput className="modal-input" onBlur={updateInput} name='email' labelAnimation="up" barAnimation="solid" labelText="Email Address" wType="outlined" inputType='text' />
+                    <WInput className="modal-input" onChange={updateInput} onBlur={updateInput} name='email' labelAnimation="up" barAnimation="solid" labelText="Email Address" wType="outlined" inputType='text' value={input.email}/>
                     <div className="modal-spacer">&nbsp;</div>
-                    <WInput className="modal-input" onBlur={updateInput} name='password' labelAnimation="up" barAnimation="solid" labelText="Password" wType="outlined" inputType='password' />
-
-                    {/* {
-                        showErr ? <div className='modal-error'>
-                            {errorMsg}
-                        </div>
-                            : <div className='modal-error'>&nbsp;</div>
-                    } */}
+                    <WInput className="modal-input" onChange={updateInput} onBlur={updateInput} name='password' labelAnimation="up" barAnimation="solid" labelText="Password" wType="outlined" inputType='password'/>
 
 				</div>
 			</WMMain>

@@ -83,7 +83,7 @@ const App = () => {
 								path="/update"
 								name="update" 
 								render={() => 
-									<UpdateAccount fetchUser={refetch} />
+									<UpdateAccount fetchUser={refetch} user={user}/>
 									}
 							/>
 						</Switch>

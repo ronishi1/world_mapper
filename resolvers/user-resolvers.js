@@ -79,6 +79,25 @@ module.exports = {
 			res.clearCookie('refresh-token');
 			res.clearCookie('access-token');
 			return true;
+		},
+
+		updateAccount: async (_, args, { res }) => {	
+			const { email, password, name, initEmail } = args;
+			const alreadyRegistered = await User.findOne({email: email});
+			if(alreadyRegistered) {
+				console.log('User with that email already registered.');
+				return(new User({
+					_id: '',
+					name:'',
+					email: 'already exists', 
+					password: ''
+				}));
+			}
+			const findAcc = await User.findOne({email: initEmail});
+			const hashed = await bcrypt.hash(password, 10);
+			const updated = await User.updateOne({_id: findAcc._id}, { name:name, email:email, password:hashed});
+			const user = await User.findOne({email: email});
+			return user;
 		}
 	}
 }

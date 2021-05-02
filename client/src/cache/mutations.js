@@ -7,7 +7,6 @@ export const LOGIN = gql`
 			_id
 			name
 			password
-			initials
 		}
 	}
 `;
@@ -23,8 +22,13 @@ export const REGISTER = gql`
 `;
 
 export const UPDATE_ACCOUNT = gql`
-	mutation UpdateAccount($email: String!, $password: String!, $name: String!, $passwordFlag: Boolean!) {
-		updateAccount(email:$email, pasword:$password, name:$name, passwordFlag:$passwordFlag)	
+	mutation UpdateAccount($email: String!, $password: String!, $name: String!, $initEmail: String!) {
+		updateAccount(email:$email, password:$password, name:$name, initEmail:$initEmail){
+			email 
+			_id
+			name
+			password
+		}
 	}
 `;
 export const LOGOUT = gql`
