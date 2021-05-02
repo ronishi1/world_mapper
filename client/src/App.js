@@ -25,6 +25,7 @@ const App = () => {
 	let user = null;
     let transactionStack = new jsTPS();
 
+	const [loginBool, setLoginBool] = useState(false);
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
 
     if(error) { console.log(error); }
@@ -35,6 +36,9 @@ const App = () => {
     }
 	const auth = user === null ? false : true;
 
+	const afterLogin = () => {
+		setLoginBool(true);
+	}
 	return(
 		<div>
 			<WLayout wLayout="header">
@@ -62,14 +66,14 @@ const App = () => {
 								path="/home" 
 								name="home" 
 								render={() => 
-									<Homescreen tps={transactionStack} fetchUser={refetch} user={user} />
+									<Homescreen tps={transactionStack} fetchUser={refetch} user={user} login={loginBool}/>
 								} 
 							/>
 							<Route 
 								path="/login"
 								name="login" 
 								render={() => 
-									<Login fetchUser={refetch} />
+									<Login fetchUser={refetch} loginCallback={afterLogin}/>
 									}
 							/>
 							<Route 

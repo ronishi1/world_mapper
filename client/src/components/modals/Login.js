@@ -29,7 +29,8 @@ const Login = (props) => {
 		if (data) {
 			props.fetchUser();
 			navHome()
-			// props.refetchTodos();
+			props.loginCallback()
+			// props.refetchMaps();
 			toggleLoading(false)
 			// props.setShowLogin(false)
 		};
@@ -77,7 +78,7 @@ const Login = (props) => {
 					</WCol>
 					<WCol size="2"></WCol>
 					<WCol size="5">
-						<WButton className="modal-button" onClick={navHome} span clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+					<WButton span onClick={navHome} className="modal-button cancel-button" wType="texted" hoverAnimation="darken" shape="rounded">
 							Cancel
 						</WButton>
 					</WCol>

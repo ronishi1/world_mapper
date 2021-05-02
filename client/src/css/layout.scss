@@ -53,6 +53,11 @@ html {
     overflow-y: scroll;
 }
 
+.map-entry {
+    padding:20px;
+    display:flex;
+    justify-content: space-between;
+}
 .table-header {
     width: calc(100% - 56px);
     box-sizing: border-box;
