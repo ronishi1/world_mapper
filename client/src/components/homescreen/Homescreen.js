@@ -30,8 +30,11 @@ const Homescreen = (props) => {
 	const [assigned, toggleAssigned] = useState(false);
 	const [createMap, setShowCreateMap] = useState(false);
 	const [showDelete, setShowDelete] = useState(false);
+	const [showEdit, setShowEdit] = useState(false);
 	const [newMapName, setNewMapName] = useState("");
 	const [toDelete, setToDelete] = useState("");
+	const [toRename, setToRename] = useState("");
+	const [rename, setRename] = useState("");
 	const [init, setInit] = useState(true);
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
@@ -45,6 +48,7 @@ const Homescreen = (props) => {
 
 	const [AddMap] = useMutation(mutations.ADD_MAP)
 	const [DeleteMap] = useMutation(mutations.DELETE_MAP)
+	const [RenameMap] = useMutation(mutations.RENAME_MAP)
 
 	const { loading, error, data, refetch } = useQuery(GET_DB_MAPS);
 	if(loading) { console.log(loading, 'loading'); }
@@ -66,6 +70,16 @@ const Homescreen = (props) => {
 		setInit(false);
 	}
 
+	const showCreateMap = () => {
+		setShowCreateMap(true);
+		setShowDelete(false);
+		setShowEdit(false);
+	}
+
+	const hideCreateMap = () => {
+		setShowCreateMap(false);
+	}
+
 	const createNewMap = async () => {
 		if(newMapName == ""){
 			alert("Map names cannot be empty. Please enter again");
@@ -76,6 +90,7 @@ const Homescreen = (props) => {
 			owner: props.user._id,
 		}
 		const { data } = await AddMap({ variables: { map:map },refetchQueries: [{ query: GET_DB_MAPS }] });
+		refetch()
 		console.log(data)
 		setNewMapName("");
 		hideCreateMap();
@@ -85,6 +100,7 @@ const Homescreen = (props) => {
 		setToDelete(_id);
 		setShowCreateMap(false);
 		setShowDelete(true);
+		setShowEdit(false);
 	}
 
 	const hideDelete = () => {
@@ -96,31 +112,35 @@ const Homescreen = (props) => {
 		setShowDelete(false);
 	}
 
-	const showCreateMap = () => {
-		setShowCreateMap(true);
+	const prepRename = (_id) => {
+		setToRename(_id);
+		setShowEdit(true);
 		setShowDelete(false);
+		setShowCreateMap(false);
 	}
 
-	const hideCreateMap = () => {
-		setShowCreateMap(false);
+	const hideEdit = () => {
+		setShowEdit(false)
+	}
+
+	const renameMap = async () => {
+		if(rename == ""){
+			alert("Map names cannot be empty. Please enter again");
+			return;
+		}
+		await RenameMap({variables: {_id: toRename, name:rename}, refetchQueries: [{query: GET_DB_MAPS}]});
+		setToRename("");
+		setRename("")
+		setShowEdit("");
 	}
 
 	const updateName = (e) => {
 		setNewMapName(e.target.value);
 	}
-// 	const refetchTodos = async (refetch) => {
-// 		const { loading, error, data } = await refetch();
-// 		if (data) {
-// 		 todolists = data.getAllTodos;
-// 		 if (activeList._id) {
-// 		  let tempID = activeList._id;
-// 		  let list = todolists.find(list => list._id === tempID);
-// 		  setActiveList(list);
-// 		 }
-// 		 return true
-// 		}
-// 		else return false;
-// 	}
+
+	const updateRename = (e) => {
+		setRename(e.target.value);
+	}
 
 // 	const tpsUndo = async () => {
 // 		const retVal = await props.tps.undoTransaction();
@@ -309,14 +329,14 @@ const Homescreen = (props) => {
 					</WLHeader>
 					<WLMain>
 						<WRow>
-							<WCol style={{overflowY:"auto",height:"427.5px"}} size="6">
+							<WCol style={{overflowY:"auto",height:"427.5px",borderRight:"1.5px solid white"}} size="6">
 								<WSidebar>
 									<div>
 									{maps.map((map) => (
-									<div className="map-entry" key={map._id}>
+									<div style={{borderBottom:"1px solid"}} className="map-entry" key={map._id}>
 										{map.name}
 										<div>
-											<WButton wType="texted" className="table-header-button">
+											<WButton onClick={() => {prepRename(map._id)}} wType="texted" className="table-header-button">
 												<i className="material-icons">edit</i>
 											</WButton>
 											<WButton onClick={() => {prepDelete(map._id)}} wType="texted" className="table-header-button">
@@ -393,7 +413,36 @@ const Homescreen = (props) => {
 							</WCol>
 						</WRow>
             		</WMFooter>
-				</WModal> : <></>}
+				</WModal> : 
+			<></>}
+			{showEdit ? 
+				<WModal visible={true} cover={true}>
+					<WMHeader>
+					<div className="modal-header">
+						Edit name of map
+					<div className="modal-close" onClick={hideEdit}>x</div>
+				</div>
+					</WMHeader>
+					<WMMain>
+						<WInput className="modal-input" onBlur={updateRename} name='email' labelAnimation="up" barAnimation="solid" labelText="Map Name" wType="outlined" inputType='text' />
+					</WMMain>
+					<WMFooter>
+						<WRow>
+							<WCol size="5">
+								<WButton span className="modal-button" onClick={renameMap}clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+									Rename Map
+								</WButton>
+							</WCol>
+							<WCol size="2"></WCol>
+							<WCol size="5">
+							<WButton span onClick={hideEdit} className="modal-button cancel-button" wType="texted" hoverAnimation="darken" shape="rounded">
+									Cancel
+								</WButton>
+							</WCol>
+						</WRow>
+            		</WMFooter>
+				</WModal> : 
+			<></>}
 
 		</div>
 	);

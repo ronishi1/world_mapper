@@ -49,7 +49,11 @@ export const DELETE_MAP = gql`
 	}
 `;
 
-
+export const RENAME_MAP = gql`
+	mutation RenameMap($_id: String!, $name: String!){
+		renameMap(_id: $_id, name: $name)
+	}
+`
 
 
 

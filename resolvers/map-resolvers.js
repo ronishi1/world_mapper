@@ -42,6 +42,13 @@ module.exports = {
 			if(deleted) return true;
 			else return false;
 		},
+		renameMap: async (_, args) => {
+			const { _id , name} = args;
+			const objectId = new ObjectId(_id);
+			const found = Map.findOne({_id:objectId})
+			found.name == name;
+			const updated = await Map.updateOne({_id:objectId},{name:name})
+		}
 
 	}
 }
