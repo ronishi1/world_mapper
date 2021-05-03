@@ -11,6 +11,7 @@ import { GET_DB_MAPS } 				from '../../cache/queries';
 import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery } 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
+import { useHistory } from 'react-router-dom'
 import { WLayout, WLHeader, WLMain, WLSide, WButton, WRow, WCol,WMHeader, WMMain, WMFooter } from 'wt-frontend';
 import { UpdateListField_Transaction, 
 	UpdateListItems_Transaction, 
@@ -36,6 +37,8 @@ const Homescreen = (props) => {
 	const [toRename, setToRename] = useState("");
 	const [rename, setRename] = useState("");
 	const [init, setInit] = useState(true);
+	
+	let history = useHistory();
 
 	const [ReorderTodoItems] 		= useMutation(mutations.REORDER_ITEMS);
 	const [UpdateTodoItemField] 	= useMutation(mutations.UPDATE_ITEM_FIELD);
@@ -94,6 +97,7 @@ const Homescreen = (props) => {
 		console.log(data)
 		setNewMapName("");
 		hideCreateMap();
+		history.push("/regions/" + data.addMap)
 	}
 
 	const prepDelete = (_id) => {
@@ -334,7 +338,7 @@ const Homescreen = (props) => {
 									<div>
 									{maps.map((map) => (
 									<div style={{borderBottom:"1px solid"}} className="map-entry" key={map._id}>
-										{map.name}
+										<div className="map-click-entry" onClick={() => {history.push("/regions/" + map._id)}}>{map.name}</div>
 										<div>
 											<WButton onClick={() => {prepRename(map._id)}} wType="texted" className="table-header-button">
 												<i className="material-icons">edit</i>

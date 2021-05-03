@@ -9,6 +9,7 @@ import React, { useState, useEffect } 	from 'react';
 import Logo 							from './components/navbar/Logo';
 import NavbarOptions 					from './components/navbar/NavbarOptions';
 import MainContents 					from './components/main/MainContents';
+import Spreadsheet						from './components/spreadsheet/Spreadsheet';
 import SidebarContents 					from './components/sidebar/SidebarContents';
 import Login 							from './components/modals/Login';
 import Delete 							from './components/modals/Delete';
@@ -89,6 +90,12 @@ const App = () => {
 								render={() => 
 									<UpdateAccount fetchUser={refetch} user={user}/>
 									}
+							/>
+							<Route 
+								path="/regions/:id"
+								render={() => 
+								<Spreadsheet user={user}/>
+								}
 							/>
 						</Switch>
 						</WLMain>
