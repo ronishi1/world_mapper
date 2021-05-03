@@ -9,20 +9,17 @@ const mapSchema = new Schema(
         name: {
             type: String,
         },
-        owner: {
-            type: String,
-        },
         parent: {
             type: String,
+        },
+        parentName: {
+            type:String,
         },
         capital: {
             type: String,
         },
         leader: {
             type: String,
-        },
-        numSub: {
-            type: Number,
         },
         landmarks: [String],
         regions: [String],

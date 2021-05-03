@@ -235,3 +235,16 @@ html, body {
     cursor:pointer;
     color:#4b4b4b
 }
+
+#spreadsheet-name {
+    color:$text-color;
+}
+
+#add-entry-button:hover {
+    background-color:var(--hover-light);
+    cursor:pointer;
+}
+
+#add-entry-button {
+    color:white;
+}

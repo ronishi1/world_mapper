@@ -10,25 +10,29 @@ module.exports = {
 		getAllMaps: async (_, __, { req }) => {
 			const _id = new ObjectId(req.userId);
 			if(!_id) { return([])};
-			const maps = await Map.find({owner: _id});
+			const maps = await Map.find({parent: _id});
 			if(maps) return (maps);
-
 		},
+		getRegion: async (_, args) => {
+			const { _id } = args;
+			if(!_id) { return([])};
+			const map = await Map.findOne({_id:_id});
+			if(map) return (map);
+		}
 	},
 	Mutation: {
 		addMap: async (_, args) => {
 			const { map } = args;
 			const objectId = new ObjectId();
-			const { name, owner } = map;
+			const { name, parent } = map;
 			const newMap = new Map({
 				_id: objectId,
 				name: name,
-				owner: owner,
 				regions: [],
-				parent: "",
+				parent: parent,
+				parentName:"",
 				capital: "",
 				leader: "",
-				numSub: 0,
 				landmarks: []
 			});
 			const updated = newMap.save();
@@ -46,9 +50,31 @@ module.exports = {
 			const { _id , name} = args;
 			const objectId = new ObjectId(_id);
 			const found = Map.findOne({_id:objectId})
-			found.name == name;
 			const updated = await Map.updateOne({_id:objectId},{name:name})
-		}
+		},
+		addSubregion: async (_, args) => {
+			const { map } = args;
+			const objectId = new ObjectId();
+			const { parent,parentName } = map;
+			const newMap = new Map({
+				_id: objectId,
+				name: "Unnamed",
+				regions: [],
+				parent: parent,
+				parentName:parentName,
+				capital: "Unnamed",
+				leader: "Unnamed",
+				landmarks: []
+			});
+			const updated = newMap.save();
+			const parentObjectId = new ObjectId(parent);
+			const found = await Map.findOne({_id:parentObjectId})
+			let regions = found.regions
+			found.regions.push(objectId)
+			await Map.updateOne({_id:parentObjectId},{regions:regions})
+			if(updated) return objectId;
+			else return ('Could not add map');
+		},
 
 	}
 }

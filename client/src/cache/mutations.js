@@ -55,7 +55,11 @@ export const RENAME_MAP = gql`
 	}
 `
 
-
+export const ADD_SUBREGION = gql`
+	mutation AddSubregion($map: MapInput!){
+		addSubregion(map: $map)
+	}
+`;
 
 
 export const ADD_ITEM = gql`

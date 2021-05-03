@@ -10,35 +10,30 @@ export const GET_DB_USER = gql`
 	}
 `;
 
-export const GET_DB_TODOS = gql`
-	query GetDBTodos {
-		getAllTodos {
-			_id
-			id
-			name
-			owner
-			items {
-				_id
-				id
-				description
-				due_date
-				assigned_to
-				completed
-			}
-		}
-	}
-`;
-
 export const GET_DB_MAPS = gql`
 	query GetDBMaps {
 		getAllMaps {
 			_id
 			name
-			owner
 			parent
+			parentName
 			capital
 			leader
-			numSub
+			landmarks
+			regions
+		}
+	}
+`;
+
+export const GET_DB_REGION = gql`
+	query GetDBRegion($_id:String!) {
+		getRegion(_id:$_id) {
+			_id
+			name
+			parent
+			parentName
+			capital
+			leader
 			landmarks
 			regions
 		}

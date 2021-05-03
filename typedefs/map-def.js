@@ -4,30 +4,30 @@ const typeDefs = gql `
 	type Map {
 		_id: String
 		name: String
-		owner: String
 		parent: String
+		parentName: String
 		capital: String
         leader: String
-        numSub: Int
 		landmarks: [String]
 		regions: [String]
 	}
 	extend type Query {
 		getAllMaps: [Map]
+		getRegion(_id:String!): Map
 	}
 	extend type Mutation {
 		addMap(map: MapInput!): String
 		deleteMap(_id:String!): Boolean
 		renameMap(_id:String!, name:String!): String
+		addSubregion(map: MapInput!): String
 	}
 	input MapInput {
 		_id: String
 		name: String
-		owner: String
 		parent: String
+		parentName: String
 		capital: String
         leader: String
-        numSub: Int
 		landmarks: [String]
 		regions: [String]
 	}

@@ -221,3 +221,20 @@ html {
     width:150px;
     text-align:center;
 }
+
+#spreadsheet-header {
+    display:flex;
+    justify-content:space-between;
+    padding:15px;
+    padding-bottom:25px;
+    border-bottom: 1px solid white;
+}
+
+#spreadsheet-name {
+    margin-bottom:-10px;
+}
+
+#add-entry-button { 
+    padding: 0.8em 0.3em;
+    margin-top:-5px;
+}

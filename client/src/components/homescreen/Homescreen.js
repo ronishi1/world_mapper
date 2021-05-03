@@ -90,11 +90,10 @@ const Homescreen = (props) => {
 		}
 		let map = {
 			name: newMapName,
-			owner: props.user._id,
+			parent: props.user._id,
 		}
 		const { data } = await AddMap({ variables: { map:map },refetchQueries: [{ query: GET_DB_MAPS }] });
 		refetch()
-		console.log(data)
 		setNewMapName("");
 		hideCreateMap();
 		history.push("/regions/" + data.addMap)
@@ -365,7 +364,7 @@ const Homescreen = (props) => {
 			</div> : 
 			<div style={{margin:"80px auto",textAlign:"center"}}>
 				<img style={{display:"block:"}} src="/globe.png" alt="image" width="400" height="400"/>
-				<h1>Welcome to the World Data Mapper</h1>
+				<h1 style={{color:"white"}}>Welcome to the World Data Mapper</h1>
 			</div>}
 			{createMap ? 
 				<WModal visible={true} cover={true}>

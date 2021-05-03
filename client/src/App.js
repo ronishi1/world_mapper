@@ -95,7 +95,7 @@ const App = () => {
 								path="/regions/:id"
 								render={() => 
 								<Spreadsheet user={user}/>
-								}
+							}
 							/>
 						</Switch>
 						</WLMain>
