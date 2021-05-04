@@ -11,6 +11,7 @@ const LoggedIn = (props) => {
 
     console.log(props)
     const handleLogout = async (e) => {
+        props.logoutCallback();
         Logout();
         const { data } = await props.fetchUser();
         if (data) {
@@ -74,7 +75,7 @@ const NavbarOptions = (props) => {
         <>
             {
                 props.auth === false ? <LoggedOut setShowLogin={props.setShowLogin} setShowCreate={props.setShowCreate}/>
-                : <LoggedIn fetchUser={props.fetchUser} setShowUpdateAccount={props.setShowUpdateAccount} setActiveList={props.setActiveList} logout={props.logout} user={props.user}/>
+                : <LoggedIn logoutCallback={props.logoutCallback} fetchUser={props.fetchUser} setShowUpdateAccount={props.setShowUpdateAccount} logout={props.logout} user={props.user}/>
             }
         </>
 

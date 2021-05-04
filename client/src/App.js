@@ -99,7 +99,7 @@ const App = () => {
 								</ul>
 								<ul>
 									<NavbarOptions
-										fetchUser={refetch} auth={auth} user={user}
+										fetchUser={refetch} auth={auth} user={user} logoutCallback={resetAncestors}
 									/>
 								</ul>
 							</WNavbar>
