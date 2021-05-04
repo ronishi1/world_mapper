@@ -16,20 +16,25 @@ import WInput from 'wt-frontend/build/components/winput/WInput';
 
 
 const SpreadsheetEntry = (props) => {
-
+    let history = useHistory();
     let region = {};
-    console.log(props._id)
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: props._id },
       });
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
-    if(data) { region = data.getRegion;console.log(region);}
+    if(data) { region = data.getRegion;}
 
-	return (
-        <WRow>
+    return (
+        <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">
-                {region.name}
+                <div style={{display:"flex",justifyContent:"space-between"}}>
+                    <i className="material-icons">close</i>
+                    <div className="map-click-entry" onClick={() => {history.push("/regions/" + region._id)}}>
+                        {region.name}
+                    </div>
+                    <div></div>
+                </div>
             </WCol>
             <WCol size="3" className="table-text">
                 {region.capital}
@@ -41,7 +46,9 @@ const SpreadsheetEntry = (props) => {
                 Region Flag
             </WCol>
             <WCol size="3" className="table-text">
-                landmarks filler
+                <div className="map-click-entry" onClick={() => {history.push("/view/" + region._id)}}>
+                    {(region.landmarks == null || region.landmarks.length == 0) ? "No landmarks" : region.landmarks[0] + ",..." }
+                </div>
             </WCol>
         </WRow>
 	);

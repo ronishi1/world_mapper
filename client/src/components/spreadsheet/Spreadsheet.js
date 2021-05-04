@@ -39,16 +39,42 @@ const Spreadsheet = (props) => {
         console.log(data);
         refetch();
     }
-    console.log(region.regions);
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
-                    <WRow id="spreadsheet-header" style={{height:"10px"}}>
-                        <WButton id="add-entry-button" onClick={() => {addSubregion()}}wType="texted">
-                            <i style={{fontSize:"40px"}} className="material-icons">add</i>
-                        </WButton>                                
-                            <div id="spreadsheet-name">Region Name: {region.name}</div>
+                    <WRow id="spreadsheet-header" style={{height:"15px"}}>
+                        <div style={{marginTop:"-15px"}}>
+                        <WButton className="spreadsheet-header-button" onClick={() => {addSubregion()}}wType="texted">
+                            <i style={{fontSize:"33px"}} className="material-icons">add</i>
+                        </WButton> 
+                        <WButton className="spreadsheet-header-button" wType="texted">
+                            <i style={{fontSize:"33px"}} className="material-icons">undo</i>
+                        </WButton>                  
+                        <WButton className="spreadsheet-header-button" wType="texted">
+                            <i style={{fontSize:"33px"}} className="material-icons">redo</i>
+                        </WButton>                                                 
+                        </div>
+                        <div style={{marginTop:"-20px"}}>
+                            <h3 id="spreadsheet-name">Region Name: {region.name}</h3>
+                        </div>
                             <div></div>
+                    </WRow>
+                    <WRow id="spreadsheet-header-labels">
+                        <WCol size="3" className="table-text">
+                            Name
+                        </WCol>
+                        <WCol size="3" className="table-text">
+                            Capital
+                        </WCol>
+                        <WCol size="2" className="table-text">
+                            Leader
+                        </WCol>
+                        <WCol size="1" className="table-text">
+                            Flag
+                        </WCol>
+                        <WCol size="3" className="table-text">
+                            Landmarks
+                        </WCol>
                     </WRow>
                         {(region.regions) ? region.regions.map((_id) => (
                             <SpreadsheetEntry _id={_id} />

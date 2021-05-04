@@ -9,6 +9,7 @@ const LoggedIn = (props) => {
 	const [Logout] = useMutation(LOGOUT);
     let history = useHistory();
 
+    console.log(props)
     const handleLogout = async (e) => {
         Logout();
         const { data } = await props.fetchUser();

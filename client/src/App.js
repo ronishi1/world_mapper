@@ -10,6 +10,7 @@ import Logo 							from './components/navbar/Logo';
 import NavbarOptions 					from './components/navbar/NavbarOptions';
 import MainContents 					from './components/main/MainContents';
 import Spreadsheet						from './components/spreadsheet/Spreadsheet';
+import RegionViewer						from './components/viewer/RegionViewer'
 import SidebarContents 					from './components/sidebar/SidebarContents';
 import Login 							from './components/modals/Login';
 import Delete 							from './components/modals/Delete';
@@ -27,6 +28,8 @@ const App = () => {
     let transactionStack = new jsTPS();
 
 	const [loginBool, setLoginBool] = useState(false);
+	const [mostRecent, setMostRecent] = useState("");
+
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
 
     if(error) { console.log(error); }
@@ -39,6 +42,10 @@ const App = () => {
 
 	const afterLogin = () => {
 		setLoginBool(true);
+	}
+
+	const selectMapCallback = (_id) => {
+		setMostRecent(_id);
 	}
 	return(
 		<div>
@@ -67,7 +74,12 @@ const App = () => {
 								path="/home" 
 								name="home" 
 								render={() => 
-									<Homescreen tps={transactionStack} fetchUser={refetch} user={user} login={loginBool}/>
+									<Homescreen tps={transactionStack} 
+											fetchUser={refetch} 
+											user={user} 
+											login={loginBool} 
+											mostRecent={mostRecent}
+											selectMapCallback={selectMapCallback}/>
 								} 
 							/>
 							<Route 
@@ -95,6 +107,12 @@ const App = () => {
 								path="/regions/:id"
 								render={() => 
 								<Spreadsheet user={user}/>
+							}
+							/>
+							<Route
+								path="/view/:id"
+								render={()=> 
+								<RegionViewer />
 							}
 							/>
 						</Switch>

@@ -47,7 +47,7 @@ const CreateAccount = (props) => {
 
 	return (
         // Replace div with WModal
-		<div>
+		<WModal visible={true} cover={true}>
 				<WMHeader>
 					<div className="modal-header">
 						Create a new account
@@ -90,7 +90,7 @@ const CreateAccount = (props) => {
 					</WCol>
 				</WRow>
 			</WMFooter>
-		</div>
+		</WModal>
 	);
 }
 

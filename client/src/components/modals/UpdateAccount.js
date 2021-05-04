@@ -5,9 +5,10 @@ import { useHistory } from 'react-router-dom'
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput, WRow, WCol} from 'wt-frontend';
 
 const UpdateAccount = (props) => {
+
 	const [input, setInput] = useState({ name: props.user.name, email: props.user.email, password: '' ,initEmail: props.user.email});
+
 	const [loading, toggleLoading] = useState(false);
-	const [showErr, displayErrorMsg] = useState(false);
 	const errorMsg = "Email/Password not found.";
 	const [UpdateAccount] = useMutation(UPDATE_ACCOUNT);
     let history = useHistory();
@@ -40,10 +41,9 @@ const UpdateAccount = (props) => {
 			else {
 				props.fetchUser();
 			}
-			// props.setShowCreate(false);
-            navHome()
-
 		};
+		navHome()
+
 	};
     const navHome = () =>{
         history.push('/')
@@ -52,7 +52,7 @@ const UpdateAccount = (props) => {
 	return (
         // Replace div with WModal
 
-		<div>
+		<WModal visible={true} cover={true}>
 				<WMHeader>
 				<div className="modal-header">
 					Update Account Information
@@ -85,7 +85,7 @@ const UpdateAccount = (props) => {
 					</WCol>
 				</WRow>
 			</WMFooter>
-		</div>
+		</WModal>
 	);
 }
 

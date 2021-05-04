@@ -227,14 +227,30 @@ html {
     justify-content:space-between;
     padding:15px;
     padding-bottom:25px;
-    border-bottom: 1px solid white;
 }
 
 #spreadsheet-name {
-    margin-bottom:-10px;
+    margin-bottom:-12px;
 }
 
-#add-entry-button { 
-    padding: 0.8em 0.3em;
-    margin-top:-5px;
+.spreadsheet-header-button { 
+    padding: 0.2em 0.3em;
+    margin-top:-2px;
+}
+
+.region-viewer-text {
+    padding: 10px;
+}
+
+#edit-parent-button{
+    padding:5px;
+    margin-left:10px;
+}
+
+.landmark-entry {
+    padding-left: 10px;
+}
+
+.add-landmark {
+    display:flex
 }

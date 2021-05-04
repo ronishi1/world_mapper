@@ -233,18 +233,54 @@ html, body {
 
 .map-click-entry:hover{
     cursor:pointer;
-    color:#4b4b4b
+    color:#6a30d6
+}
+
+.map-click-entry{
+    color:#3676ec
 }
 
 #spreadsheet-name {
     color:$text-color;
 }
 
-#add-entry-button:hover {
+.spreadsheet-header-button:hover {
     background-color:var(--hover-light);
     cursor:pointer;
 }
 
-#add-entry-button {
+.spreadsheet-header-button {
     color:white;
+}
+
+.table-text {
+    color:white
+}
+
+#spreadsheet-header-labels {
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+    background-color: #262930;
+}
+
+.spreadsheet-entry {
+    background-color: #393d47;
+    border-bottom: 1px solid white
+}
+
+.region-viewer-text{
+    color:white
+}
+
+#edit-parent-button:hover {
+    background-color:var(--hover-light);
+    cursor:pointer;
+}
+
+#edit-parent-button {
+    color:white
+}
+
+.add-landmark {
+    background-color:#393d47;
 }

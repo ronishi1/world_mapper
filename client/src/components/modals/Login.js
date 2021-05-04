@@ -42,7 +42,7 @@ const Login = (props) => {
 	return (
         // Replace div with WModal
 
-		<div>
+		<WModal visible={true} cover={true}>
 			<WMHeader>
 				<div className="modal-header">
 					Login
@@ -84,7 +84,7 @@ const Login = (props) => {
 					</WCol>
 				</WRow>
 			</WMFooter>
-		</div>
+		</WModal>
 	);
 }
 
