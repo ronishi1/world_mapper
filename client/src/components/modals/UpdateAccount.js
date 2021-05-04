@@ -46,6 +46,8 @@ const UpdateAccount = (props) => {
 
 	};
     const navHome = () =>{
+		console.log('test')
+		props.cancelCallback();
         history.push('/')
     }
 

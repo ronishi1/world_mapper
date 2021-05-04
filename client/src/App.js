@@ -54,6 +54,7 @@ const App = () => {
 	}
 
 	const resetAncestors = () => {
+		console.log("call");
 		setAncestors([]);
 	}
 
@@ -63,6 +64,7 @@ const App = () => {
 		setAncestors(ancestors.slice(0,index+1))
 		console.log(ancestors);
 	}
+
 	return(
 		<div>
 			<WLayout wLayout="header">
@@ -136,7 +138,7 @@ const App = () => {
 								path="/update"
 								name="update" 
 								render={() => 
-									<UpdateAccount fetchUser={refetch} user={user}/>
+									<UpdateAccount fetchUser={refetch} user={user} cancelCallback={resetAncestors}/>
 									}
 							/>
 							<Route 
