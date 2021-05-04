@@ -70,7 +70,10 @@ const Homescreen = (props) => {
 		refetch()
 		setNewMapName("");
 		hideCreateMap();
-		history.push("/regions/" + data.addMap)
+		let id = data.addMap.slice(0,data.addMap.indexOf("|||"))
+		let name = data.addMap.slice(data.addMap.indexOf("|||") + 3, data.addMap.length)
+		history.push("/regions/" + id)
+		handleNavigate(id,name)
 	}
 
 	const prepDelete = (_id) => {
@@ -130,6 +133,10 @@ const Homescreen = (props) => {
 	const handleSelectMap = (_id) => {
 		props.selectMapCallback(_id);
 	}
+
+	const handleNavigate = (_id,name) => {
+		props.navigateCallback(_id,name);
+	}
 	return (
 		<div>
 			{auth ? 
@@ -147,7 +154,7 @@ const Homescreen = (props) => {
 									<div>
 									{ordered.map((map) => (
 									<div style={{borderBottom:"1px solid"}} className="map-entry" key={map._id}>
-										<div className="map-click-entry" onClick={() => {history.push("/regions/" + map._id);handleSelectMap(map._id)}}>{map.name}</div>
+										<div className="map-click-entry" onClick={() => {history.push("/regions/" + map._id);handleSelectMap(map._id);handleNavigate(map._id,map.name)}}>{map.name}</div>
 										<div>
 											<WButton onClick={() => {prepRename(map._id)}} wType="texted" className="table-header-button">
 												<i className="material-icons">edit</i>

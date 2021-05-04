@@ -25,12 +25,15 @@ const SpreadsheetEntry = (props) => {
 	if(error) { console.log(error, 'error'); }
     if(data) { region = data.getRegion;}
 
+    const handleNavigate = (_id,name) => {
+        props.navigateCallback(_id,name);
+    }
     return (
         <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">
                 <div style={{display:"flex",justifyContent:"space-between"}}>
                     <i className="material-icons">close</i>
-                    <div className="map-click-entry" onClick={() => {history.push("/regions/" + region._id)}}>
+                    <div className="map-click-entry" onClick={() => {history.push("/regions/" + region._id);handleNavigate(region._id,region.name)}}>
                         {region.name}
                     </div>
                     <div></div>

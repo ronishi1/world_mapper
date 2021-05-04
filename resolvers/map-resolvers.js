@@ -36,7 +36,7 @@ module.exports = {
 				landmarks: []
 			});
 			const updated = newMap.save();
-			if(updated) return objectId;
+			if(updated) return objectId + "|||" + name;
 			else return ('Could not add map');
 		},
 		deleteMap: async (_, args) => {

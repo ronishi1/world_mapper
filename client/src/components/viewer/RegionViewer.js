@@ -30,6 +30,12 @@ const RegionViewer = (props) => {
         <div style={{margin:"30px auto",width:"90%"}}>
             <WRow>
                 <WCol size="6">
+                        <WButton className="spreadsheet-header-button" wType="texted">
+                            <i style={{fontSize:"33px"}} className="material-icons">undo</i>
+                        </WButton>                  
+                        <WButton className="spreadsheet-header-button" wType="texted">
+                            <i style={{fontSize:"33px"}} className="material-icons">redo</i>
+                        </WButton>     
                     <h3 className="region-viewer-text">FLAG IMAGE GOES HERE</h3>
                     <h3 className="region-viewer-text">Region Name: {region.name}</h3>
                     <h3 className="region-viewer-text">

@@ -77,7 +77,7 @@ const Spreadsheet = (props) => {
                         </WCol>
                     </WRow>
                         {(region.regions) ? region.regions.map((_id) => (
-                            <SpreadsheetEntry _id={_id} />
+                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback}/>
                         )) : <div></div>}
             </div>
 

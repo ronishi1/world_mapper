@@ -29,6 +29,7 @@ const App = () => {
 
 	const [loginBool, setLoginBool] = useState(false);
 	const [mostRecent, setMostRecent] = useState("");
+	const [ancestors, setAncestors] = useState([]);
 
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
 
@@ -47,6 +48,21 @@ const App = () => {
 	const selectMapCallback = (_id) => {
 		setMostRecent(_id);
 	}
+
+	const navigateCallback = (_id, name) => {
+		setAncestors(ancestors.concat({_id:_id,name:name}));
+	}
+
+	const resetAncestors = () => {
+		setAncestors([]);
+	}
+
+	const handleClickAncestor = (_id) => {
+		let index = ancestors.findIndex(ancestor=> ancestor._id === _id);
+		console.log(index);
+		setAncestors(ancestors.slice(0,index+1))
+		console.log(ancestors);
+	}
 	return(
 		<div>
 			<WLayout wLayout="header">
@@ -55,10 +71,29 @@ const App = () => {
 							<WNavbar color="colored">
 								<ul>
 									<WNavItem>
-										<Link to="/">
+										<Link to="/" onClick={resetAncestors}>
 										<Logo className='logo' />
 										</Link>
 									</WNavItem>
+								</ul>
+								<ul>
+									{ancestors.map((ancestor,index) => {
+										if(index == ancestors.length-1){
+											return <Link  to={"/regions/"+ancestor._id}>
+											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry ancestor">
+												{ancestor.name}
+											</div>
+											</Link>
+										}
+										return <Link  to={"/regions/"+ancestor._id}>
+											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry ancestor">
+												{ancestor.name}
+											</div>
+											<div>
+												<i className="material-icons">chevron_right</i>
+											</div>
+										</Link>
+									})}
 								</ul>
 								<ul>
 									<NavbarOptions
@@ -79,7 +114,8 @@ const App = () => {
 											user={user} 
 											login={loginBool} 
 											mostRecent={mostRecent}
-											selectMapCallback={selectMapCallback}/>
+											selectMapCallback={selectMapCallback}
+											navigateCallback={navigateCallback}/>
 								} 
 							/>
 							<Route 
@@ -106,7 +142,7 @@ const App = () => {
 							<Route 
 								path="/regions/:id"
 								render={() => 
-								<Spreadsheet user={user}/>
+								<Spreadsheet user={user} navigateCallback={navigateCallback}/>
 							}
 							/>
 							<Route
