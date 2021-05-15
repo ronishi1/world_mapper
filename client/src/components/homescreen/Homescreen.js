@@ -33,14 +33,6 @@ const Homescreen = (props) => {
 	if(data) { maps = data.getAllMaps;}
 
 	const auth = props.user === null ? false : true;
-	
-	const refetchMaps = async (refetch) => {
-		const { loading, error, data } = await refetch();
-		if (data) {
-		 maps = data.getAllMaps;
-		}
-		console.log(maps);
-	}
 
 	if(props.login && init){
 		refetch();

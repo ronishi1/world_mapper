@@ -7,11 +7,7 @@ import { useMutation, useQuery} 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { useHistory } from 'react-router-dom'
 import { WLayout, WLHeader, WLMain, WLSide, WButton, WRow, WCol,WMHeader, WMMain, WMFooter } from 'wt-frontend';
-import { UpdateListField_Transaction, 
-	UpdateListItems_Transaction, 
-	ReorderItems_Transaction, 
-	EditItem_Transaction,
-SortItemsByColumn_Transaction } 				from '../../utils/jsTPS';
+import { EditRegion_Transaction } 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 import WModal from 'wt-frontend/build/components/wmodal/WModal';
 
@@ -21,6 +17,7 @@ const Spreadsheet = (props) => {
     let region = {};
     let { id } = useParams();
     const [AddSubregion] = useMutation(mutations.ADD_SUBREGION)
+    const [EditRegion] = useMutation(mutations.EDIT_REGION)
 
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: id },
@@ -29,6 +26,17 @@ const Spreadsheet = (props) => {
 	if(error) { console.log(error, 'error'); }
     if(data) { region = data.getRegion;console.log(region);}
 
+    const tpsUndo = async () => {
+		const retVal = await props.tps.undoTransaction();
+		await refetch()
+		return retVal;
+	}
+
+	const tpsRedo = async () => {
+		const retVal = await props.tps.doTransaction();
+		await refetch()
+		return retVal;
+	}
 
     const addSubregion = async () => {
 		let map = {
@@ -39,6 +47,12 @@ const Spreadsheet = (props) => {
         console.log(data);
         refetch();
     }
+
+    const editRegion = async (regionID, field, value, prev) => {
+		let transaction = new EditRegion_Transaction(regionID, field, prev, value, EditRegion);
+		props.tps.addTransaction(transaction);
+		tpsRedo();
+	};
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
@@ -61,7 +75,15 @@ const Spreadsheet = (props) => {
                     </WRow>
                     <WRow id="spreadsheet-header-labels">
                         <WCol size="3" className="table-text">
-                            Name
+                            <div style={{display:"flex",justifyContent:"space-between"}}>
+                                <div></div>
+                                <div>Name</div>
+                                <div>
+                                    <i style={{visibility:"hidden"}} className="material-icons">delete_outline</i>
+                                    <i style={{visibility:"hidden"}} className="material-icons">delete_outline</i>
+                                    <i style={{visibility:"hidden"}} className="material-icons">delete_outline</i>
+                                </div>
+                            </div>
                         </WCol>
                         <WCol size="3" className="table-text">
                             Capital
@@ -77,7 +99,7 @@ const Spreadsheet = (props) => {
                         </WCol>
                     </WRow>
                         {(region.regions) ? region.regions.map((_id) => (
-                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback}/>
+                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback} editRegion={editRegion}/>
                         )) : <div></div>}
             </div>
 

@@ -61,6 +61,12 @@ export const ADD_SUBREGION = gql`
 	}
 `;
 
+export const EDIT_REGION = gql`
+	mutation EditRegion($_id: String!, $field: String!, $value: String!){
+		editRegion(_id:$_id, field: $field, value: $value)
+	}
+`
+
 
 export const ADD_ITEM = gql`
 	mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {

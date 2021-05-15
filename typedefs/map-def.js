@@ -20,6 +20,7 @@ const typeDefs = gql `
 		deleteMap(_id:String!): Boolean
 		renameMap(_id:String!, name:String!): String
 		addSubregion(map: MapInput!): String
+		editRegion(_id:String!, field: String!, value: String!): String
 	}
 	input MapInput {
 		_id: String

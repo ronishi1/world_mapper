@@ -83,15 +83,17 @@ module.exports = {
 
 		updateAccount: async (_, args, { res }) => {	
 			const { email, password, name, initEmail } = args;
-			const alreadyRegistered = await User.findOne({email: email});
-			if(alreadyRegistered) {
-				console.log('User with that email already registered.');
-				return(new User({
-					_id: '',
-					name:'',
-					email: 'already exists', 
-					password: ''
-				}));
+			if(initEmail != email){
+				const alreadyRegistered = await User.findOne({email: email});
+				if(alreadyRegistered) {
+					console.log('User with that email already registered.');
+					return(new User({
+						_id: '',
+						name:'',
+						email: 'already exists', 
+						password: ''
+					}));
+				}
 			}
 			const findAcc = await User.findOne({email: initEmail});
 			const hashed = await bcrypt.hash(password, 10);

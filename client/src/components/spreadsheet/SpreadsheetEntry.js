@@ -18,6 +18,11 @@ import WInput from 'wt-frontend/build/components/winput/WInput';
 const SpreadsheetEntry = (props) => {
     let history = useHistory();
     let region = {};
+
+    const [editingName, toggleName] = useState(false);
+    const [editingLeader, toggleLeader] = useState(false);
+    const [editingCapital, toggleCapital] = useState(false);
+    const [refresher, toggleRefresher] = useState(false);
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: props._id },
       });
@@ -28,22 +33,82 @@ const SpreadsheetEntry = (props) => {
     const handleNavigate = (_id,name) => {
         props.navigateCallback(_id,name);
     }
+
+    const handleNameEdit = async (e) => {
+        toggleName(false);
+        const newName = e.target.value ? e.target.value : 'Unnamed';
+        const prevName = region.name;
+        props.editRegion(region._id, 'name', newName, prevName);
+        await refetch();
+        toggleRefresher(!refresher);
+    }
+
+    const handleLeaderEdit = async (e) => {
+        toggleLeader(false);
+        const newLeader = e.target.value ? e.target.value : 'Unnamed';
+        const prevLeader = region.leader;
+        props.editRegion(region._id, 'leader', newLeader, prevLeader);
+        await refetch();
+        toggleRefresher(!refresher);
+    }
+
+    const handleCapitalEdit = async (e) => {
+        toggleCapital(false);
+        const newCapital = e.target.value ? e.target.value : 'Unnamed';
+        const prevCapital = region.leader;
+        props.editRegion(region._id, 'capital', newCapital, prevCapital);
+        await refetch();
+        toggleRefresher(!refresher);
+    }
+
     return (
         <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">
-                <div style={{display:"flex",justifyContent:"space-between"}}>
-                    <i className="material-icons">close</i>
-                    <div className="map-click-entry" onClick={() => {history.push("/regions/" + region._id);handleNavigate(region._id,region.name)}}>
-                        {region.name}
+                {editingName ? 
+                    <WInput className="table-input" onBlur={handleNameEdit} defaultValue={region.name}
+                            wType="outlined" barAnimation="solid" inputClass="table-input-class"
+                            autoFocus={true} type='text'>
+                    </WInput> 
+                    : 
+                    <div style={{display:"flex",justifyContent:"space-between"}}>
+                        <div></div>
+                        <div className="map-click-entry" onClick={() => {history.push("/regions/" + region._id);handleNavigate(region._id,region.name)}}>
+                            {region.name}
+                        </div>
+                        <div>
+                            <WButton onClick={() => {toggleName(!editingName)}} wType="texted" className="table-header-button">
+                                <i className="material-icons">edit</i>
+                            </WButton>
+                            <WButton onClick={() => {}} wType="texted" className="table-header-button">
+								<i className="material-icons">delete_outline</i>
+							</WButton>
+                        </div>
                     </div>
-                    <div></div>
-                </div>
+                }
             </WCol>
             <WCol size="3" className="table-text">
-                {region.capital}
+                {editingCapital ?
+                    <WInput className="table-input" onBlur={handleCapitalEdit} defaultValue={region.capital}
+                        wType="outlined" barAnimation="solid" inputClass="table-input-class"
+                        autoFocus={true} type='text'>
+                    </WInput> 
+                    :
+                    <div onClick={() => toggleCapital(!editingCapital)}
+                            >{region.capital}
+                    </div>
+                }
             </WCol>
             <WCol size="2" className="table-text">
-                {region.leader}
+                {editingLeader ?
+                    <WInput className="table-input" onBlur={handleLeaderEdit} defaultValue={region.leader}
+                        wType="outlined" barAnimation="solid" inputClass="table-input-class"
+                        autoFocus={true} type='text'>
+                    </WInput> 
+                    :
+                    <div onClick={() => toggleLeader(!editingLeader)}
+                            >{region.leader}
+                    </div>
+                }
             </WCol>
             <WCol size="1" className="table-text">
                 Region Flag

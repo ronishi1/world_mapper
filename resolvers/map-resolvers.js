@@ -49,7 +49,6 @@ module.exports = {
 		renameMap: async (_, args) => {
 			const { _id , name} = args;
 			const objectId = new ObjectId(_id);
-			const found = Map.findOne({_id:objectId})
 			const updated = await Map.updateOne({_id:objectId},{name:name})
 		},
 		addSubregion: async (_, args) => {
@@ -75,6 +74,14 @@ module.exports = {
 			if(updated) return objectId;
 			else return ('Could not add map');
 		},
+		editRegion: async (_, args) => {
+			const { _id, field, value} = args;
+			const objectId = new ObjectId(_id);
+			let update = {};
+			update[field] = value;
+			const updated = await Map.updateOne({_id:objectId},update);
+			
+		}
 
 	}
 }

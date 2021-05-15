@@ -40,9 +40,9 @@ const UpdateAccount = (props) => {
 			}
 			else {
 				props.fetchUser();
+				navHome()
 			}
 		};
-		navHome()
 
 	};
     const navHome = () =>{

@@ -38,7 +38,7 @@ html {
     font-size: 1.125rem;
     padding-bottom: 12px;
     padding-top: 12px;
-    cursor: pointer;
+    // cursor: pointer;
 }
 
 .table {
@@ -255,6 +255,6 @@ html {
     display:flex
 }
 
-.ancestor {
-    padding: 0
+a {
+    padding: 0rem 0rem !important;
 }

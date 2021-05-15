@@ -82,13 +82,13 @@ const App = () => {
 									{ancestors.map((ancestor,index) => {
 										if(index == ancestors.length-1){
 											return <Link  to={"/regions/"+ancestor._id}>
-											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry ancestor">
+											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry">
 												{ancestor.name}
 											</div>
 											</Link>
 										}
 										return <Link  to={"/regions/"+ancestor._id}>
-											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry ancestor">
+											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry">
 												{ancestor.name}
 											</div>
 											<div>
@@ -144,7 +144,7 @@ const App = () => {
 							<Route 
 								path="/regions/:id"
 								render={() => 
-								<Spreadsheet user={user} navigateCallback={navigateCallback}/>
+								<Spreadsheet user={user} navigateCallback={navigateCallback} tps={transactionStack}/>
 							}
 							/>
 							<Route
