@@ -97,7 +97,41 @@ module.exports = {
 			const updated = await Map.updateOne({_id:parentId},{regions:parentRegion.regions});
 			const remake = new Map(region);
 			remake.save();
-
+		},
+		sortRegions: async(_, args) => {
+			const { _id, field, order, prev} = args;
+			const objectId = new ObjectId(_id);
+			const found = await Map.findOne({_id: objectId});
+			let regionIDs = found.regions;
+			let result = await Map.find({_id:{$in:regionIDs}});
+			let regions = [];
+			regionIDs.forEach((id) => {
+				for(let i = 0; i < result.length;i++){
+					if(result[i]._id == id){
+						regions.push(result[i])
+					}
+				}
+			});
+			let temp = [...regions]
+			let tempFlag = false;
+			let fin;
+			if (order == 0) {
+				regions.sort((a, b) => (a[field] > b[field]) ? 1 : -1);
+				for(var i = 0; i<regions.length; i++){
+					if(regions[i][field] != temp[i][field]){
+						tempFlag = true;
+					}
+				}
+				if(!tempFlag) {
+					regions.sort((a, b) => (a[field] < b[field]) ? 1 : -1);
+				}
+				fin = regions.map(region => region._id);
+			}
+			else if (order==1){
+				fin = prev;
+			}
+			const updated = await Map.updateOne({_id: objectId}, { regions:fin })
+			return regions.map(result => result.name)
 		}
 
 	}

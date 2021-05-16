@@ -78,6 +78,11 @@ export const UNDELETE_REGION = gql`
 	}
 `
 
+export const SORT_REGIONS = gql`
+	mutation SortRegions($_id: String!, $field: String!, $order: Int!, $prev: [String!]){
+		sortRegions(_id: $_id, field: $field, order: $order, prev: $prev)
+	}
+`
 export const ADD_ITEM = gql`
 	mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {
 		addItem(item: $item, _id: $_id, index: $index)

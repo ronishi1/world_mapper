@@ -25,6 +25,28 @@ export class UpdateListField_Transaction extends jsTPS_Transaction {
     }
 }
 
+export class SortRegions_Transaction extends jsTPS_Transaction {
+    constructor(_id, field, order,prev, callback) {
+        super();
+        this.prev = prev;
+        this.order = order;
+        this.field = field;
+        this._id = _id;
+        this.updateFunction = callback;
+    }
+
+    async doTransaction() {
+		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: this.order, prev:[]}});
+        console.log(data);
+        return data;
+    }
+
+    async undoTransaction() {
+        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: 1, prev:this.prev}});
+        return data;
+    }
+}
+
 export class EditRegion_Transaction extends jsTPS_Transaction {
     constructor(_id, field, prev, update, callback) {
         super();
@@ -86,6 +108,8 @@ export class SortItemsByColumn_Transaction extends jsTPS_Transaction {
         return data;
     }
 }
+
+
 
 /*  Handles item reordering */
 export class ReorderItems_Transaction extends jsTPS_Transaction {

@@ -7,7 +7,7 @@ import { useMutation, useQuery} 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { useHistory } from 'react-router-dom'
 import { WLayout, WLHeader, WLMain, WLSide, WButton, WRow, WCol,WMHeader, WMMain, WMFooter } from 'wt-frontend';
-import { EditRegion_Transaction, DeleteRegion_Transaction} 				from '../../utils/jsTPS';
+import { EditRegion_Transaction, DeleteRegion_Transaction, SortRegions_Transaction} from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 import WModal from 'wt-frontend/build/components/wmodal/WModal';
 
@@ -20,6 +20,8 @@ const Spreadsheet = (props) => {
     const [EditRegion] = useMutation(mutations.EDIT_REGION)
     const [DeleteRegion] = useMutation(mutations.DELETE_REGION);
     const [UnDeleteRegion] = useMutation(mutations.UNDELETE_REGION);
+    const [SortRegions] = useMutation(mutations.SORT_REGIONS);
+
 
     const [showDelete, toggleShowDelete] = useState(false);
     const [toDelete, setToDelete] = useState({});
@@ -30,6 +32,7 @@ const Spreadsheet = (props) => {
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
     if(data) { region = data.getRegion;}
+
 
     const refetchMaps = async (refetch) => {
 		const { loading, error, data } = await refetch();
@@ -86,6 +89,28 @@ const Spreadsheet = (props) => {
         refetch();
     }
 
+    const sortRegionsByColumn = async (field) => {
+        let prev = [...region.regions];
+		if(field == "name"){
+			let transaction = new SortRegions_Transaction(id,field,0,prev,SortRegions)
+			props.tps.addTransaction(transaction);
+			refetch();
+			tpsRedo();
+		}
+		else if (field == "leader"){
+			let transaction = new SortRegions_Transaction(id,field,0,prev,SortRegions)
+			props.tps.addTransaction(transaction);
+			refetch();
+			tpsRedo();
+		}
+		else if (field=="capital"){
+			let transaction = new SortRegions_Transaction(id,field,0,prev,SortRegions)
+			props.tps.addTransaction(transaction);
+			refetch();
+			tpsRedo();
+		}
+	}
+
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
@@ -107,7 +132,7 @@ const Spreadsheet = (props) => {
                             <div></div>
                     </WRow>
                     <WRow id="spreadsheet-header-labels">
-                        <WCol size="3" className="table-text">
+                        <WCol size="3" className="table-text" onClick={() => {sortRegionsByColumn("name")}}>
                             <div style={{display:"flex",justifyContent:"space-between"}}>
                                 <div></div>
                                 <div>Name</div>
