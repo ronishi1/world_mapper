@@ -116,6 +116,9 @@ const Spreadsheet = (props) => {
 		}
 	}
 
+    const handleNavigateViewer = (cur) => {
+        props.navigateViewerCallback(cur,region);
+    }
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
@@ -162,7 +165,9 @@ const Spreadsheet = (props) => {
                         </WCol>
                     </WRow>
                         {(region.regions) ? region.regions.map((_id) => (
-                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback} clickDelete={clickDelete} editRegion={editRegion}/>
+                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback} 
+                            clickDelete={clickDelete} editRegion={editRegion}
+                            navigateViewerCallback={handleNavigateViewer}/>
                         )) : <div></div>}
             </div>
 			{showDelete ? <WModal visible={true} cover={true}>

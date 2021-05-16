@@ -284,3 +284,8 @@ html, body {
 .add-landmark {
     background-color:#393d47;
 }
+
+.navigate-arrow:hover {
+    background-color:var(--hover-light);
+    cursor:pointer;
+}

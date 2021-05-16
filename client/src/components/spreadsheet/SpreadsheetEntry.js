@@ -71,6 +71,9 @@ const SpreadsheetEntry = (props) => {
         props.clickDelete(region);
     }
 
+    const handleNavigateViewer = () => {
+        props.navigateViewerCallback(region._id);
+    }
     return (
         <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">
@@ -124,7 +127,7 @@ const SpreadsheetEntry = (props) => {
                 Region Flag
             </WCol>
             <WCol size="3" className="table-text">
-                <div className="map-click-entry" onClick={() => {history.push("/view/" + region._id)}}>
+                <div className="map-click-entry" onClick={() => {history.push("/view/" + region._id);handleNavigateViewer()}}>
                     {(region.landmarks == null || region.landmarks.length == 0) ? "No landmarks" : region.landmarks[0] + ",..." }
                 </div>
             </WCol>

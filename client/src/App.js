@@ -4,7 +4,7 @@ import * as queries 	from './cache/queries';
 import { jsTPS } 		from './utils/jsTPS';
 import { BrowserRouter, Switch, Route, Redirect, useHistory, Link} from 'react-router-dom';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
-import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend';
+import { WLayout, WLHeader, WLMain, WLSide, WButton } from 'wt-frontend';
 import React, { useState, useEffect } 	from 'react';
 import Logo 							from './components/navbar/Logo';
 import NavbarOptions 					from './components/navbar/NavbarOptions';
@@ -30,6 +30,10 @@ const App = () => {
 	const [loginBool, setLoginBool] = useState(false);
 	const [mostRecent, setMostRecent] = useState("");
 	const [ancestors, setAncestors] = useState([]);
+	const [viewing, setViewing] = useState(false);
+	const [curParent, setCurParent] = useState({})
+	const [prev, setPrev] = useState("");
+	const [next, setNext] = useState("");
 
     const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER);
 
@@ -65,6 +69,38 @@ const App = () => {
 		console.log(ancestors);
 	}
 
+	const navigateViewerCallback = (cur, parent) => {
+		setCurParent(parent);
+		setViewing(true);
+		let curIndex = parent.regions.indexOf(cur);
+		if(curIndex == 0){
+			setPrev("");
+		}
+		else {
+			setPrev(parent.regions[curIndex-1]);
+		}
+		if(curIndex == parent.regions.length-1){
+			setNext("");
+		}
+		else {
+			setNext(parent.regions[curIndex+1]);
+		}
+	}
+
+	const prevSibling = () => {
+		navigateViewerCallback(prev,curParent);
+	}
+
+	const nextSibling = () => {
+		navigateViewerCallback(next,curParent);
+	}
+	const navigateOffViewerCallback = () => {
+		setCurParent({});
+		setViewing(false);
+		setPrev("");
+		setNext("");
+	}
+
 	return(
 		<div>
 			<WLayout wLayout="header">
@@ -73,7 +109,7 @@ const App = () => {
 							<WNavbar color="colored">
 								<ul>
 									<WNavItem>
-										<Link to="/" onClick={resetAncestors}>
+										<Link to="/" onClick={() => {resetAncestors();navigateOffViewerCallback()}}>
 										<Logo className='logo' />
 										</Link>
 									</WNavItem>
@@ -82,7 +118,7 @@ const App = () => {
 									{ancestors.map((ancestor,index) => {
 										if(index == ancestors.length-1){
 											return <Link  to={"/regions/"+ancestor._id}>
-											<div onClick={()=>{handleClickAncestor(ancestor._id)}} className="map-click-entry">
+											<div onClick={()=>{handleClickAncestor(ancestor._id);navigateOffViewerCallback()}} className="map-click-entry">
 												{ancestor.name}
 											</div>
 											</Link>
@@ -96,6 +132,38 @@ const App = () => {
 											</div>
 										</Link>
 									})}
+								</ul>
+								<ul>
+									{viewing ?
+									<div style={{display:"flex",justifyContent:"space-between"}}>
+										{prev != "" ? 
+											<Link to={(prev!="")? "/view/" + prev : "#"} onClick={() => {prevSibling()}}>
+												<WButton wType="texted" className="navigate-arrow" 
+														style={{color:"white"}} >
+													<i className="material-icons">arrow_back</i>
+												</WButton>
+											</Link>
+											:
+											<WButton wType="texted" className="navigate-arrow" 
+											style={{color:"white"}} disabled={true}>
+											<i className="material-icons">arrow_back</i>
+											</WButton>}
+										{next != "" ? 
+											<Link to={"/view/" + next} onClick={() => {nextSibling()}}>
+												<WButton wType="texted" className="navigate-arrow" 
+												style={{color:"white"}} >
+													<i className="material-icons">arrow_forward</i>
+												</WButton> 
+											</Link>
+											:
+											<WButton wType="texted" className="navigate-arrow" 
+												style={{color:"white"}} disabled={true}>
+												<i className="material-icons">arrow_forward</i>
+											</WButton> 
+										}
+									</div>
+									: <></>
+									}
 								</ul>
 								<ul>
 									<NavbarOptions
@@ -144,13 +212,14 @@ const App = () => {
 							<Route 
 								path="/regions/:id"
 								render={() => 
-								<Spreadsheet user={user} navigateCallback={navigateCallback} tps={transactionStack}/>
+								<Spreadsheet user={user} navigateCallback={navigateCallback} 
+								navigateViewerCallback={navigateViewerCallback}tps={transactionStack}/>
 							}
 							/>
 							<Route
 								path="/view/:id"
 								render={()=> 
-								<RegionViewer />
+								<RegionViewer navigateOffViewerCallback={navigateOffViewerCallback}/>
 							}
 							/>
 						</Switch>

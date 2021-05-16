@@ -39,7 +39,9 @@ const RegionViewer = (props) => {
                     <h3 className="region-viewer-text">FLAG IMAGE GOES HERE</h3>
                     <h3 className="region-viewer-text">Region Name: {region.name}</h3>
                     <h3 className="region-viewer-text">
-                        Parent Region: <div style={{display:"inline-block"}} onClick={() => {history.push("/regions/" + region.parent)}}className="map-click-entry">
+                        Parent Region: <div style={{display:"inline-block"}} 
+                        onClick={() => {history.push("/regions/" + region.parent);props.navigateOffViewerCallback();}}
+                        className="map-click-entry">
                             {region.parentName}
                             </div>
                         <WButton wType="texted" id="edit-parent-button">
