@@ -22,13 +22,22 @@ const SpreadsheetEntry = (props) => {
     const [editingName, toggleName] = useState(false);
     const [editingLeader, toggleLeader] = useState(false);
     const [editingCapital, toggleCapital] = useState(false);
-    const [refresher, toggleRefresher] = useState(false);
+    
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
-        variables: { _id: props._id },
-      });
+        variables: { _id: props._id },fetchPolicy:"network-only",
+      },);
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
     if(data) { region = data.getRegion;}
+
+    const refetchMaps = async (refetch) => {
+		const { loading, error, data } = await refetch();
+		if (data) {
+		 region = data.getRegion;
+		 return true
+		}
+		else return false;
+	}
 
     const handleNavigate = (_id,name) => {
         props.navigateCallback(_id,name);
@@ -39,8 +48,7 @@ const SpreadsheetEntry = (props) => {
         const newName = e.target.value ? e.target.value : 'Unnamed';
         const prevName = region.name;
         props.editRegion(region._id, 'name', newName, prevName);
-        await refetch();
-        toggleRefresher(!refresher);
+        refetchMaps(refetch);
     }
 
     const handleLeaderEdit = async (e) => {
@@ -48,17 +56,15 @@ const SpreadsheetEntry = (props) => {
         const newLeader = e.target.value ? e.target.value : 'Unnamed';
         const prevLeader = region.leader;
         props.editRegion(region._id, 'leader', newLeader, prevLeader);
-        await refetch();
-        toggleRefresher(!refresher);
+        refetchMaps(refetch);
     }
 
     const handleCapitalEdit = async (e) => {
         toggleCapital(false);
         const newCapital = e.target.value ? e.target.value : 'Unnamed';
-        const prevCapital = region.leader;
+        const prevCapital = region.capital;
         props.editRegion(region._id, 'capital', newCapital, prevCapital);
-        await refetch();
-        toggleRefresher(!refresher);
+        refetchMaps(refetch);
     }
 
     return (

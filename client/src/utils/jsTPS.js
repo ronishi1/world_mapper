@@ -1,3 +1,5 @@
+import { GET_DB_REGION } from "../cache/queries";
+
 export class jsTPS_Transaction {
     constructor() {};
     doTransaction() {};
@@ -33,11 +35,13 @@ export class EditRegion_Transaction extends jsTPS_Transaction {
         this.updateFunction = callback;
     }
     async doTransaction() {
-		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.update }});
+		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.update }
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this._id}}]});
 		return data;
     }
     async undoTransaction() {
-        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.prev }});
+        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.prev }
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this._id}}]});
 		return data;
     }
 }

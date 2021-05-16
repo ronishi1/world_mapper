@@ -18,23 +18,33 @@ const Spreadsheet = (props) => {
     let { id } = useParams();
     const [AddSubregion] = useMutation(mutations.ADD_SUBREGION)
     const [EditRegion] = useMutation(mutations.EDIT_REGION)
+    const [refresher, toggleRefresher] = useState(0);
 
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
-        variables: { _id: id },
+        variables: { _id: id },fetchPolicy:"network-only",
       });
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
-    if(data) { region = data.getRegion;console.log(region);}
+    if(data) { region = data.getRegion;}
+
+    const refetchMaps = async (refetch) => {
+		const { loading, error, data } = await refetch();
+		if (data) {
+		 region = data.getRegion;
+		 return true
+		}
+		else return false;
+	}
 
     const tpsUndo = async () => {
 		const retVal = await props.tps.undoTransaction();
-		await refetch()
+		refetchMaps(refetch);
 		return retVal;
 	}
 
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
-		await refetch()
+		refetchMaps(refetch);
 		return retVal;
 	}
 
@@ -52,6 +62,7 @@ const Spreadsheet = (props) => {
 		let transaction = new EditRegion_Transaction(regionID, field, prev, value, EditRegion);
 		props.tps.addTransaction(transaction);
 		tpsRedo();
+        refetch();
 	};
 	return (
 		<div>
@@ -61,10 +72,10 @@ const Spreadsheet = (props) => {
                         <WButton className="spreadsheet-header-button" onClick={() => {addSubregion()}}wType="texted">
                             <i style={{fontSize:"33px"}} className="material-icons">add</i>
                         </WButton> 
-                        <WButton className="spreadsheet-header-button" wType="texted">
+                        <WButton onClick={() => {tpsUndo()}}className="spreadsheet-header-button" wType="texted">
                             <i style={{fontSize:"33px"}} className="material-icons">undo</i>
                         </WButton>                  
-                        <WButton className="spreadsheet-header-button" wType="texted">
+                        <WButton onClick={() => {tpsRedo()}} className="spreadsheet-header-button" wType="texted">
                             <i style={{fontSize:"33px"}} className="material-icons">redo</i>
                         </WButton>                                                 
                         </div>

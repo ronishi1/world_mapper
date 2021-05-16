@@ -80,7 +80,8 @@ module.exports = {
 			let update = {};
 			update[field] = value;
 			const updated = await Map.updateOne({_id:objectId},update);
-			
+			if(updated) return objectId;
+			else return ('Could not update')
 		}
 
 	}
