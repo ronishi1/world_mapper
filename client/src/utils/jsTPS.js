@@ -5,26 +5,29 @@ export class jsTPS_Transaction {
     doTransaction() {};
     undoTransaction () {};
 }
-/*  Handles list name changes, or any other top level details of a todolist that may be added   */
-export class UpdateListField_Transaction extends jsTPS_Transaction {
-    constructor(_id, field, prev, update, callback) {
-        super();
-        this.prev = prev;
-        this.update = update;
-        this.field = field;
+
+export class AddRegion_Transaction extends jsTPS_Transaction {
+    constructor(_id, map, parent, addFunc, deleteFunc) {
+        super()
         this._id = _id;
-        this.updateFunction = callback;
+        this.map = map;
+        this.parent = parent;
+        this.addFunction = addFunc;
+        this.deleteFunction = deleteFunc;
     }
+
     async doTransaction() {
-		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.update }});
-		return data;
+        const { data } = await this.addFunction({variables: {_id: this._id, map: this.map}
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.map.parent}}]});
+        return data;
     }
+
     async undoTransaction() {
-        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, value: this.prev }});
-		return data;
+        const { data } = await this.deleteFunction({variables: {regionID: this._id, parentRegion: this.parent}
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.map.parent}}]});
+        return data;
     }
 }
-
 export class SortRegions_Transaction extends jsTPS_Transaction {
     constructor(_id, field, order,prev, callback) {
         super();
@@ -36,13 +39,15 @@ export class SortRegions_Transaction extends jsTPS_Transaction {
     }
 
     async doTransaction() {
-		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: this.order, prev:[]}});
+		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: this.order, prev:[]}
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
         console.log(data);
         return data;
     }
 
     async undoTransaction() {
-        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: 1, prev:this.prev}});
+        const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: 1, prev:this.prev}
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
         return data;
     }
 }
@@ -78,13 +83,14 @@ export class DeleteRegion_Transaction extends jsTPS_Transaction {
     }
 
     async doTransaction() {
-        const { data } = await this.updateFunction({variables: {region:this.region,parentRegion:this.parent}
+        const { data } = await this.updateFunction({variables: {regionID:this.region._id,parentRegion:this.parent}
             ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
         return data;
     }
 
     async undoTransaction() {
-        const { data } = await this.undoUpdateFunction({variables: {region:this.region,parentRegion:this.parent}})
+        const { data } = await this.undoUpdateFunction({variables: {region:this.region,parentRegion:this.parent}
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
     }
 }
 

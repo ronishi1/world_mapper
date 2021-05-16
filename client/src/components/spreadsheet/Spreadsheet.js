@@ -7,13 +7,14 @@ import { useMutation, useQuery} 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { useHistory } from 'react-router-dom'
 import { WLayout, WLHeader, WLMain, WLSide, WButton, WRow, WCol,WMHeader, WMMain, WMFooter } from 'wt-frontend';
-import { EditRegion_Transaction, DeleteRegion_Transaction, SortRegions_Transaction} from '../../utils/jsTPS';
+import { EditRegion_Transaction, DeleteRegion_Transaction, SortRegions_Transaction, AddRegion_Transaction} from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 import WModal from 'wt-frontend/build/components/wmodal/WModal';
 
 import { useParams } from 'react-router-dom';
 import SpreadsheetEntry from './SpreadsheetEntry';
 const Spreadsheet = (props) => {
+    const ObjectId = require('mongoose').Types.ObjectId;
     let region = {};
     let { id } = useParams();
     const [AddSubregion] = useMutation(mutations.ADD_SUBREGION)
@@ -60,8 +61,12 @@ const Spreadsheet = (props) => {
             parent: id,
             parentName: region.name
 		}
-        const { data } = await AddSubregion({ variables: { map:map }});
-        console.log(data);
+        let parent = {...region}
+        delete parent.__typename;
+        const objectId = new ObjectId();
+        let transaction = new AddRegion_Transaction(objectId, map, parent, AddSubregion, DeleteRegion);
+        props.tps.addTransaction(transaction)
+        tpsRedo();
         refetch();
     }
 

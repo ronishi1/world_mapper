@@ -56,8 +56,8 @@ export const RENAME_MAP = gql`
 `
 
 export const ADD_SUBREGION = gql`
-	mutation AddSubregion($map: MapInput!){
-		addSubregion(map: $map)
+	mutation AddSubregion($_id: String! $map: MapInput!){
+		addSubregion(_id: $_id, map: $map)
 	}
 `;
 
@@ -67,8 +67,8 @@ export const EDIT_REGION = gql`
 	}
 `
 export const DELETE_REGION = gql`
-	mutation DeleteRegion($region: MapInput!, $parentRegion: MapInput!){
-		deleteRegion(region: $region, parentRegion: $parentRegion)
+	mutation DeleteRegion($regionID: String!, $parentRegion: MapInput!){
+		deleteRegion(regionID: $regionID, parentRegion: $parentRegion)
 	}
 `
 
