@@ -82,6 +82,22 @@ module.exports = {
 			const updated = await Map.updateOne({_id:objectId},update);
 			if(updated) return objectId;
 			else return ('Could not update')
+		},
+		deleteRegion: async(_, args) => {
+			const { region, parentRegion } = args;
+			const parentId = new ObjectId(parentRegion._id);
+			let updateRegions = parentRegion.regions.filter(r => r !== region._id);
+			const updated = await Map.updateOne({_id:parentId},{regions:updateRegions});
+			let objectId = new ObjectId(region._id);
+			await Map.deleteOne({_id:objectId})
+		},
+		unDeleteRegion: async(_, args) => {
+			const { region, parentRegion } = args;
+			const parentId = new ObjectId(parentRegion._id);
+			const updated = await Map.updateOne({_id:parentId},{regions:parentRegion.regions});
+			const remake = new Map(region);
+			remake.save();
+
 		}
 
 	}

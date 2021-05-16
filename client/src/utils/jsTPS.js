@@ -46,6 +46,26 @@ export class EditRegion_Transaction extends jsTPS_Transaction {
     }
 }
 
+export class DeleteRegion_Transaction extends jsTPS_Transaction {
+    constructor(region,parentRegion,callback,undoCallback) {
+        super()
+        this.region = region;
+        this.parent = parentRegion;
+        this.updateFunction = callback;
+        this.undoUpdateFunction = undoCallback;
+    }
+
+    async doTransaction() {
+        const { data } = await this.updateFunction({variables: {region:this.region,parentRegion:this.parent}
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
+        return data;
+    }
+
+    async undoTransaction() {
+        const { data } = await this.undoUpdateFunction({variables: {region:this.region,parentRegion:this.parent}})
+    }
+}
+
 export class SortItemsByColumn_Transaction extends jsTPS_Transaction {
     constructor(_id, field, order,prev, callback) {
         super();

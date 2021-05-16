@@ -7,7 +7,7 @@ import { useMutation, useQuery} 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { useHistory } from 'react-router-dom'
 import { WLayout, WLHeader, WLMain, WLSide, WButton, WRow, WCol,WMHeader, WMMain, WMFooter } from 'wt-frontend';
-import { EditRegion_Transaction } 				from '../../utils/jsTPS';
+import { EditRegion_Transaction, DeleteRegion_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 import WModal from 'wt-frontend/build/components/wmodal/WModal';
 
@@ -18,7 +18,11 @@ const Spreadsheet = (props) => {
     let { id } = useParams();
     const [AddSubregion] = useMutation(mutations.ADD_SUBREGION)
     const [EditRegion] = useMutation(mutations.EDIT_REGION)
-    const [refresher, toggleRefresher] = useState(0);
+    const [DeleteRegion] = useMutation(mutations.DELETE_REGION);
+    const [UnDeleteRegion] = useMutation(mutations.UNDELETE_REGION);
+
+    const [showDelete, toggleShowDelete] = useState(false);
+    const [toDelete, setToDelete] = useState({});
 
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: id },fetchPolicy:"network-only",
@@ -64,6 +68,24 @@ const Spreadsheet = (props) => {
 		tpsRedo();
         refetch();
 	};
+
+    const clickDelete = (region) => {
+        toggleShowDelete(true);
+        setToDelete(region)
+    }
+
+    const deleteRegion = async () => {
+        let current = {...toDelete}
+        delete current.__typename;
+        let parent = {...region}
+        delete parent.__typename;
+        let transaction = new DeleteRegion_Transaction(current,parent, DeleteRegion, UnDeleteRegion);
+        props.tps.addTransaction(transaction);
+        toggleShowDelete(false);
+		tpsRedo();
+        refetch();
+    }
+
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
@@ -110,10 +132,33 @@ const Spreadsheet = (props) => {
                         </WCol>
                     </WRow>
                         {(region.regions) ? region.regions.map((_id) => (
-                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback} editRegion={editRegion}/>
+                            <SpreadsheetEntry key={_id} _id={_id} navigateCallback={props.navigateCallback} clickDelete={clickDelete} editRegion={editRegion}/>
                         )) : <div></div>}
             </div>
-
+			{showDelete ? <WModal visible={true} cover={true}>
+					<WMHeader>
+					<div className="modal-header">
+						Delete map?
+					<div className="modal-close" onClick={() => {toggleShowDelete(false)}}>x</div>
+				</div>
+					</WMHeader>
+					<WMFooter>
+						<WRow>
+							<WCol size="5">
+								<WButton span className="modal-button" onClick={() => {deleteRegion()}}clickAnimation="ripple-light" hoverAnimation="lighten" shape="rounded" color="danger">
+									Delete Map
+								</WButton>
+							</WCol>
+							<WCol size="2"></WCol>
+							<WCol size="5">
+								<WButton span onClick={() => {toggleShowDelete(false);}} className="modal-button cancel-button" wType="texted" hoverAnimation="darken" shape="rounded">
+									Cancel
+								</WButton>
+							</WCol>
+						</WRow>
+            		</WMFooter>
+				</WModal> : 
+			<></>}
 		</div>
 	);
 };

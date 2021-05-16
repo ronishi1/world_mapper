@@ -66,7 +66,17 @@ export const EDIT_REGION = gql`
 		editRegion(_id:$_id, field: $field, value: $value)
 	}
 `
+export const DELETE_REGION = gql`
+	mutation DeleteRegion($region: MapInput!, $parentRegion: MapInput!){
+		deleteRegion(region: $region, parentRegion: $parentRegion)
+	}
+`
 
+export const UNDELETE_REGION = gql`
+	mutation UnDeleteRegion($region: MapInput!, $parentRegion: MapInput!){
+		unDeleteRegion(region: $region, parentRegion: $parentRegion)
+	}
+`
 
 export const ADD_ITEM = gql`
 	mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {

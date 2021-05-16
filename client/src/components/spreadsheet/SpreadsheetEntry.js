@@ -22,7 +22,7 @@ const SpreadsheetEntry = (props) => {
     const [editingName, toggleName] = useState(false);
     const [editingLeader, toggleLeader] = useState(false);
     const [editingCapital, toggleCapital] = useState(false);
-    
+
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: props._id },fetchPolicy:"network-only",
       },);
@@ -67,6 +67,10 @@ const SpreadsheetEntry = (props) => {
         refetchMaps(refetch);
     }
 
+    const handleClickDelete = () => {
+        props.clickDelete(region);
+    }
+
     return (
         <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">
@@ -85,7 +89,7 @@ const SpreadsheetEntry = (props) => {
                             <WButton onClick={() => {toggleName(!editingName)}} wType="texted" className="table-header-button">
                                 <i className="material-icons">edit</i>
                             </WButton>
-                            <WButton onClick={() => {}} wType="texted" className="table-header-button">
+                            <WButton onClick={() => {handleClickDelete()}} wType="texted" className="table-header-button">
 								<i className="material-icons">delete_outline</i>
 							</WButton>
                         </div>
