@@ -182,6 +182,36 @@ module.exports = {
 				updated = await Map.updateOne({_id:parentId},{landmarks:result})
 			}
 			return "done"
+		},
+		editLandmark: async(_, args) => {
+			const {_id, locationID, name} = args;
+			let objectId = new ObjectId(locationID);
+			let found = await Map.findOne({_id: objectId});
+			for(let i = 0;i<found.landmarks.length;i++){
+				if(found.landmarks[i].name == name){
+					return "duplicate";
+				}
+			}
+			for(let i = 0; i<found.landmarks.length; i++ ){ 
+				if(found.landmarks[i]._id == _id){
+					found.landmarks[i].name = name;
+				}
+			}
+			let updated = await Map.updateOne({_id:objectId},{landmarks:found.landmarks})
+			let parentId;
+			while(found.parentName != "") {
+				result = [];
+				parentId = new ObjectId(found.parent);
+				found = await Map.findOne({_id:parentId});
+				for(let i = 0; i<found.landmarks.length; i++ ){ 
+					if(found.landmarks[i]._id == _id){
+						found.landmarks[i].name = name;
+					}
+				}
+				updated = await Map.updateOne({_id:parentId},{landmarks:found.landmarks})
+			}
+
+
 		}
 
 	}

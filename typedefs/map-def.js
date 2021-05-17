@@ -32,6 +32,7 @@ const typeDefs = gql `
 		sortRegions(_id: String!, field: String!, order: Int!, prev: [String!]): [String]
 		addLandmark(_id: String!, name: String!, locationName: String!, locationID: String!): String
 		deleteLandmark(_id:String!, locationID: String!): String
+		editLandmark(_id:String!, locationID: String!, name: String!): String
 	}
 	input MapInput {
 		_id: String

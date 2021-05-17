@@ -6,6 +6,28 @@ export class jsTPS_Transaction {
     undoTransaction () {};
 }
 
+export class EditLandmark_Transaction extends jsTPS_Transaction {
+    constructor(_id,locationID,newName,prevName,callback) {
+        super();
+        this._id = _id;
+        this.locationID = locationID;
+        this.newName = newName;
+        this.prevName = prevName;
+        this.updateFunction = callback;
+    }
+
+    async doTransaction() {
+        const { data } = await this.updateFunction({variables: {_id:this._id, locationID: this.locationID, name: this.newName},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: this.locationID } }] });
+        return data;
+    }
+
+    async undoTransaction() {
+        const { data } = await this.updateFunction({variables: {_id:this._id, locationID: this.locationID, name: this.prevName},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: this.locationID } }] });
+        return data;
+    }
+}
 export class AddLandmark_Transaction extends jsTPS_Transaction {
     constructor(_id,name,locationName,locationID,addFunc,deleteFunc){
         super();

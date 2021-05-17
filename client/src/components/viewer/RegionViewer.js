@@ -6,7 +6,7 @@ import * as mutations 					from '../../cache/mutations';
 import { useMutation, useQuery} 		from '@apollo/client';
 import { WNavbar, WSidebar, WNavItem } 	from 'wt-frontend';
 import { WLayout, WLHeader, WLMain, WLSide, WButton, WRow, WCol,WMHeader, WMMain, WMFooter } from 'wt-frontend';
-import { AddLandmark_Transaction, DeleteLandmark_Transaction} 				from '../../utils/jsTPS';
+import { AddLandmark_Transaction, DeleteLandmark_Transaction, EditLandmark_Transaction} 				from '../../utils/jsTPS';
 import WInput from 'wt-frontend/build/components/winput/WInput';
 import WModal from 'wt-frontend/build/components/wmodal/WModal';
 import { useParams, useHistory } from 'react-router-dom'
@@ -38,9 +38,13 @@ const RegionViewer = (props) => {
 	}
     const [initName, setInitName] = useState(""); 
     const [showDelete, toggleShowDelete] = useState(false);
+    const [showEdit, toggleShowEdit] = useState(false);
     const [toDelete, setToDelete] = useState({});
+    const [toEdit, setToEdit] = useState({});
+    const [editName, setEditName] = useState("");
 	const [AddLandmark] = useMutation(mutations.ADD_LANDMARK)
     const [DeleteLandmark] = useMutation(mutations.DELETE_LANDMARK);
+    const [EditLandmark] = useMutation(mutations.EDIT_LANDMARK);
 
     const updateName = (e) => {
 		setInitName(e.target.value);
@@ -57,7 +61,15 @@ const RegionViewer = (props) => {
 		tpsRedo().then((result) => {
             if(result.addLandmark == "duplicate"){
                 alert("The landmark name cannot be the same as an existing one.")
-                props.tps.clearAllTransactions();
+                console.log(props.tps.transactions);
+                if(props.tps.transactions.length == 1){
+                    props.tps.clearAllTransactions();
+                }
+                else {
+                    props.tps.transactions.pop();
+                    props.tps.mostRecentTransaction -= 1;        
+
+                }
             };
         });
         
@@ -70,16 +82,33 @@ const RegionViewer = (props) => {
     const handleDeleteLandmark = async () => {
         let transaction = new DeleteLandmark_Transaction(toDelete._id,toDelete.name,toDelete.locationName,toDelete.locationID,AddLandmark,DeleteLandmark);
         props.tps.addTransaction(transaction);
-		tpsRedo();
+        tpsRedo();
         refetch();
 
-        // const { data } = await DeleteLandmark({ variables: { _id: landmarkID, locationID: locationID},
-        //     refetchQueries: [{ query: GET_DB_REGION,variables: { _id: id } }] });
-        // console.log(data);
         toggleShowDelete(false);
         setToDelete({});
     }
 
+    const handleEditLandmark = async () => {
+        let transaction = new EditLandmark_Transaction(toEdit._id, toEdit.locationID,editName,toEdit.name,EditLandmark);
+        props.tps.addTransaction(transaction);
+        tpsRedo().then((result) => {
+            console.log(result);
+            if(result.editLandmark == "duplicate"){
+                alert("The landmark name cannot be the same as an existing one.")
+                if(props.tps.transactions.length == 1){
+                    props.tps.clearAllTransactions();
+                }
+                else {
+                    props.tps.transactions.pop();
+                    props.tps.mostRecentTransaction -= 1;        
+                }
+            };
+        });  
+        refetch();
+        toggleShowEdit(false);
+        setToEdit({});
+    }
     const handleOnChange = (e) => {
         setInitName(e.target.value);
     }
@@ -88,6 +117,15 @@ const RegionViewer = (props) => {
         setToDelete(landmark);
         toggleShowDelete(true);
     }
+
+    const prepEdit = (landmark) => {
+        setToEdit(landmark);
+        toggleShowEdit(true);
+    }
+
+    const updateEditName = (e) => {
+		setEditName(e.target.value);
+	}
 
     return (
         <div style={{margin:"30px auto",width:"90%"}}>
@@ -124,10 +162,17 @@ const RegionViewer = (props) => {
                                 <div>
                                 {landmark.name}
                                 </div>
-                                <WButton className="landmark-delete" wType="texted" hoverAnimation="lighten"
-                                color="danger" onClick={() => prepDelete(landmark)}>
-                                    <i className="material-icons">close</i>
-                                </WButton></div>
+                                <div>
+                                    <WButton className="landmark-edit" wType="texted" 
+                                    onClick={() => {prepEdit(landmark)}}>
+                                        <i className="material-icons">edit</i>
+                                    </WButton>
+                                    <WButton className="landmark-delete" wType="texted" hoverAnimation="lighten"
+                                    color="danger" onClick={() => prepDelete(landmark)}>
+                                        <i className="material-icons">close</i>
+                                    </WButton>
+                                </div>
+                                </div>
                             }
                             else {
                                 return <div className="landmark-entry-disable" style={{display:"flex",justifyContent:"start"}}>
@@ -161,6 +206,34 @@ const RegionViewer = (props) => {
 							<WCol size="2"></WCol>
 							<WCol size="5">
 								<WButton span onClick={() => {toggleShowDelete(false);}} className="modal-button cancel-button" wType="texted" hoverAnimation="darken" shape="rounded">
+									Cancel
+								</WButton>
+							</WCol>
+						</WRow>
+            		</WMFooter>
+				</WModal> : 
+			<></>}
+            {showEdit ? 
+				<WModal visible={true} cover={true}>
+					<WMHeader>
+					<div className="modal-header">
+						Edit landmark name
+					<div className="modal-close" onClick={() => {toggleShowEdit(false)}}>x</div>
+				</div>
+					</WMHeader>
+					<WMMain>
+						<WInput className="modal-input" onBlur={updateEditName} name='email' defaultValue={toEdit.name} labelAnimation="up" barAnimation="solid" labelText="Landmark Name" wType="outlined" inputType='text' />
+					</WMMain>
+					<WMFooter>
+						<WRow>
+							<WCol size="5">
+								<WButton span className="modal-button" onClick={() => {handleEditLandmark()}} clickAnimation="ripple-light" hoverAnimation="darken" shape="rounded" color="primary">
+									Edit name
+								</WButton>
+							</WCol>
+							<WCol size="2"></WCol>
+							<WCol size="5">
+							<WButton span onClick={() => {toggleShowEdit(false)}} className="modal-button cancel-button" wType="texted" hoverAnimation="darken" shape="rounded">
 									Cancel
 								</WButton>
 							</WCol>
