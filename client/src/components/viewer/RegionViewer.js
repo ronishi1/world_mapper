@@ -22,9 +22,37 @@ const RegionViewer = (props) => {
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: id },
       });
+
+    const ObjectId = require('mongoose').Types.ObjectId;
+    
 	if(loading) { console.log(loading, 'loading'); }
 	if(error) { console.log(error, 'error'); }
     if(data) { region = data.getRegion;}
+
+    const [initName, setInitName] = useState(""); 
+	const [AddLandmark] = useMutation(mutations.ADD_LANDMARK)
+    const [DeleteLandmark] = useMutation(mutations.DELETE_LANDMARK);
+
+    const updateName = (e) => {
+		setInitName(e.target.value);
+        console.log(e.target.value);
+	}
+    const handleAddLandmark = async () => {
+        const objectId = new ObjectId();
+        const { data } = await AddLandmark({ variables: { _id: objectId, name:initName, locationName:region.name,locationID: region._id },
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: id } }] });
+        setInitName("");
+    }
+
+    const handleDeleteLandmark = async (landmarkID,locationID) => {
+        const { data } = await DeleteLandmark({ variables: { _id: landmarkID, locationID: locationID},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: id } }] });
+        console.log(data);
+    }
+
+    const handleOnChange = (e) => {
+        setInitName(e.target.value);
+    }
 
     return (
         <div style={{margin:"30px auto",width:"90%"}}>
@@ -56,14 +84,20 @@ const RegionViewer = (props) => {
                     <h3 style={{color:"white"}}>Region Landmarks:</h3>
                     <WSidebar>
                         {region.landmarks  ? region.landmarks.map((landmark) => (
-                            <div className="table-text landmark-entry">{landmark}</div>
+                            <div className="table-text landmark-entry map-entry" style={{display:"flex",justifyContent:"start"}}>
+                                <div>
+                                {landmark.name}
+                                </div>
+                                <WButton className="landmark-delete" wType="texted" onClick={() => handleDeleteLandmark(landmark._id,landmark.locationID)}>
+                                    <i className="material-icons">close</i>
+                                </WButton></div>
                         )) : <div></div>}
                     </WSidebar>
                     <div className="add-landmark">
-                        <WButton wType="texted" id="edit-parent-button">
+                        <WButton wType="texted" id="edit-parent-button" onClick={() => handleAddLandmark()}>
                             <i className="material-icons">add</i>
                         </WButton>
-                        <WInput></WInput>
+                        <WInput className="modal-input" value={initName} onBlur={updateName} onChange={handleOnChange} labelAnimation="up" barAnimation="solid" labelText="Landmark Name" wType="outlined" inputType='text'></WInput>
                     </div>
                 </WCol>
             </WRow>

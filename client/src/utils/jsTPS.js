@@ -40,14 +40,14 @@ export class SortRegions_Transaction extends jsTPS_Transaction {
 
     async doTransaction() {
 		const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: this.order, prev:[]}
-            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this._id}}]});
         console.log(data);
         return data;
     }
 
     async undoTransaction() {
         const { data } = await this.updateFunction({ variables: { _id: this._id, field: this.field, order: 1, prev:this.prev}
-            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.parent._id}}]});
+            ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this._id}}]});
         return data;
     }
 }

@@ -8,8 +8,14 @@ const typeDefs = gql `
 		parentName: String
 		capital: String
         leader: String
-		landmarks: [String]
+		landmarks: [Landmark]
 		regions: [String]
+	}
+	type Landmark {
+		_id: String
+		name: String
+		locationName: String
+		locationID: String
 	}
 	extend type Query {
 		getAllMaps: [Map]
@@ -24,6 +30,8 @@ const typeDefs = gql `
 		deleteRegion(regionID: String!, parentRegion: MapInput!): String
 		unDeleteRegion(region: MapInput!, parentRegion: MapInput!): String
 		sortRegions(_id: String!, field: String!, order: Int!, prev: [String!]): [String]
+		addLandmark(_id: String!, name: String!, locationName: String!, locationID: String!): String
+		deleteLandmark(_id:String!, locationID: String!): String
 	}
 	input MapInput {
 		_id: String
@@ -34,6 +42,12 @@ const typeDefs = gql `
         leader: String
 		landmarks: [String]
 		regions: [String]
+	}
+	input LandmarkInput {
+		_id: String
+		name: String
+		locationName: String
+		locationID: String
 	}
 `;
 

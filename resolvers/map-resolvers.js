@@ -1,6 +1,6 @@
 const ObjectId = require('mongoose').Types.ObjectId;
 const Map = require('../models/map-model');
-
+const Landmark = require('../models/landmark-model')
 // The underscore param, "_", is a wildcard that can represent any value;
 // here it is a stand-in for the parent parameter, which can be read about in
 // the Apollo Server documentation regarding resolvers
@@ -132,6 +132,45 @@ module.exports = {
 			}
 			const updated = await Map.updateOne({_id: objectId}, { regions:fin })
 			return regions.map(result => result.name)
+		},
+		addLandmark: async(_, args) => {
+			const {_id , name, locationName, locationID } = args;
+			let newLandmark = new Landmark({
+				_id: _id,
+				name: name,
+				locationName:locationName,
+				locationID: locationID
+			});
+			let objectId = new ObjectId(locationID);
+			let found = await Map.findOne({_id: objectId});
+			found.landmarks.push(newLandmark);
+			let updated = await Map.updateOne({_id:objectId},{landmarks:found.landmarks})
+			let parentId;
+			while(found.parentName != "") {
+				parentId = new ObjectId(found.parent);
+				found = await Map.findOne({_id:parentId});
+				found.landmarks.push(newLandmark);
+				updated = await Map.updateOne({_id:parentId},{landmarks:found.landmarks})
+			}
+		},
+		deleteLandmark: async(_, args) => {
+			const {_id, locationID} = args;
+			let objectId = new ObjectId(locationID);
+			let found = await Map.findOne({_id: objectId});
+			found.landmarks = found.landmarks.filter((landmark) => {
+				landmark._id != _id;
+			})
+			let updated = await Map.updateOne({_id:objectId},{landmarks:found.landmarks})
+			let parentId;
+			while(found.parentName != "") {
+				parentId = new ObjectId(found.parent);
+				found = await Map.findOne({_id:parentId});
+				found.landmarks = found.landmarks.filter((landmark) => {
+					landmark._id != _id;
+				})				
+				updated = await Map.updateOne({_id:parentId},{landmarks:found.landmarks})
+			}
+			return "done"
 		}
 
 	}

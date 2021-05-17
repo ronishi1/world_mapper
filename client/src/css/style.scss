@@ -289,3 +289,14 @@ html, body {
     background-color:var(--hover-light);
     cursor:pointer;
 }
+
+.landmark-delete {
+    color:rgb(133, 14, 14);
+    padding: 0 0 0 0!important;
+    margin-left:10px !important
+}
+
+.landmark-delete:hover {
+    background-color:rgba(255,255,255, 0.3);
+    cursor:pointer;
+}

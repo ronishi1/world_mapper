@@ -128,7 +128,7 @@ const SpreadsheetEntry = (props) => {
             </WCol>
             <WCol size="3" className="table-text">
                 <div className="map-click-entry" onClick={() => {history.push("/view/" + region._id);handleNavigateViewer()}}>
-                    {(region.landmarks == null || region.landmarks.length == 0) ? "No landmarks" : region.landmarks[0] + ",..." }
+                    {(region.landmarks == null || region.landmarks.length == 0) ? "No landmarks" : region.landmarks[0].name + ",..." }
                 </div>
             </WCol>
         </WRow>

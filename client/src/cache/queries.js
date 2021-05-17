@@ -19,7 +19,12 @@ export const GET_DB_MAPS = gql`
 			parentName
 			capital
 			leader
-			landmarks
+			landmarks {
+				_id
+				name
+				locationName
+				locationID
+			}
 			regions
 		}
 	}
@@ -34,7 +39,12 @@ export const GET_DB_REGION = gql`
 			parentName
 			capital
 			leader
-			landmarks
+			landmarks {
+				_id
+				name
+				locationName
+				locationID
+			}
 			regions
 		}
 	}

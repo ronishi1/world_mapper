@@ -83,6 +83,18 @@ export const SORT_REGIONS = gql`
 		sortRegions(_id: $_id, field: $field, order: $order, prev: $prev)
 	}
 `
+
+export const ADD_LANDMARK = gql`
+	mutation AddLandmark($_id: String!, $name: String!, $locationName: String!, $locationID: String!){
+		addLandmark(_id: $_id, name: $name, locationName: $locationName, locationID: $locationID)
+	}
+`
+
+export const DELETE_LANDMARK = gql`
+	mutation DeleteLandmark($_id: String!, $locationID: String!) {
+		deleteLandmark(_id: $_id, locationID: $locationID)
+	}
+`
 export const ADD_ITEM = gql`
 	mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {
 		addItem(item: $item, _id: $_id, index: $index)

@@ -1,4 +1,5 @@
 const { model, Schema, ObjectId } = require('mongoose');
+const Landmark = require('./landmark-model').schema;
 
 const mapSchema = new Schema(
     {
@@ -21,7 +22,7 @@ const mapSchema = new Schema(
         leader: {
             type: String,
         },
-        landmarks: [String],
+        landmarks: [Landmark],
         regions: [String],
     },
 );
