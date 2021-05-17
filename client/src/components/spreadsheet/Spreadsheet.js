@@ -23,7 +23,6 @@ const Spreadsheet = (props) => {
     const [UnDeleteRegion] = useMutation(mutations.UNDELETE_REGION);
     const [SortRegions] = useMutation(mutations.SORT_REGIONS);
 
-
     const [showDelete, toggleShowDelete] = useState(false);
     const [toDelete, setToDelete] = useState({});
 
@@ -127,10 +126,10 @@ const Spreadsheet = (props) => {
                         <WButton className="spreadsheet-header-button" onClick={() => {addSubregion()}}wType="texted">
                             <i style={{fontSize:"33px"}} className="material-icons">add</i>
                         </WButton> 
-                        <WButton onClick={() => {tpsUndo()}}className="spreadsheet-header-button" wType="texted">
+                        <WButton onClick={() => {tpsUndo()}}className="spreadsheet-header-button" wType="texted" disabled={!props.tps.hasTransactionToUndo()}>
                             <i style={{fontSize:"33px"}} className="material-icons">undo</i>
                         </WButton>                  
-                        <WButton onClick={() => {tpsRedo()}} className="spreadsheet-header-button" wType="texted">
+                        <WButton onClick={() => {tpsRedo()}} className="spreadsheet-header-button" wType="texted" disabled={!props.tps.hasTransactionToRedo()}>
                             <i style={{fontSize:"33px"}} className="material-icons">redo</i>
                         </WButton>                                                 
                         </div>
@@ -173,7 +172,7 @@ const Spreadsheet = (props) => {
 			{showDelete ? <WModal visible={true} cover={true}>
 					<WMHeader>
 					<div className="modal-header">
-						Delete map?
+						Delete region?
 					<div className="modal-close" onClick={() => {toggleShowDelete(false)}}>x</div>
 				</div>
 					</WMHeader>
@@ -181,7 +180,7 @@ const Spreadsheet = (props) => {
 						<WRow>
 							<WCol size="5">
 								<WButton span className="modal-button" onClick={() => {deleteRegion()}}clickAnimation="ripple-light" hoverAnimation="lighten" shape="rounded" color="danger">
-									Delete Map
+									Delete
 								</WButton>
 							</WCol>
 							<WCol size="2"></WCol>

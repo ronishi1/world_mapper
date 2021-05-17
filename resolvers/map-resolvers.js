@@ -157,18 +157,24 @@ module.exports = {
 			const {_id, locationID} = args;
 			let objectId = new ObjectId(locationID);
 			let found = await Map.findOne({_id: objectId});
-			found.landmarks = found.landmarks.filter((landmark) => {
-				landmark._id != _id;
-			})
-			let updated = await Map.updateOne({_id:objectId},{landmarks:found.landmarks})
+			let result = [];
+			for(let i = 0; i < found.landmarks.length;i++){
+				if(found.landmarks[i]._id != _id){
+					result.push(found.landmarks[i]);
+				}
+			}
+			let updated = await Map.updateOne({_id:objectId},{landmarks:result})
 			let parentId;
 			while(found.parentName != "") {
+				result = [];
 				parentId = new ObjectId(found.parent);
 				found = await Map.findOne({_id:parentId});
-				found.landmarks = found.landmarks.filter((landmark) => {
-					landmark._id != _id;
-				})				
-				updated = await Map.updateOne({_id:parentId},{landmarks:found.landmarks})
+				for(let i = 0; i < found.landmarks.length;i++){
+					if(found.landmarks[i]._id != _id){
+						result.push(found.landmarks[i]);
+					}
+				}		
+				updated = await Map.updateOne({_id:parentId},{landmarks:result})
 			}
 			return "done"
 		}

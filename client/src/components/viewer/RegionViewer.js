@@ -30,6 +30,9 @@ const RegionViewer = (props) => {
     if(data) { region = data.getRegion;}
 
     const [initName, setInitName] = useState(""); 
+    const [showDelete, toggleShowDelete] = useState(false);
+    const [landmarkID,setLandmarkID] = useState("");
+    const [locationID,setLocationID] = useState("");
 	const [AddLandmark] = useMutation(mutations.ADD_LANDMARK)
     const [DeleteLandmark] = useMutation(mutations.DELETE_LANDMARK);
 
@@ -38,20 +41,31 @@ const RegionViewer = (props) => {
         console.log(e.target.value);
 	}
     const handleAddLandmark = async () => {
+        if(initName == ""){
+            alert("Landmark name cannot be empty");
+            return;
+        }
         const objectId = new ObjectId();
         const { data } = await AddLandmark({ variables: { _id: objectId, name:initName, locationName:region.name,locationID: region._id },
             refetchQueries: [{ query: GET_DB_REGION,variables: { _id: id } }] });
         setInitName("");
     }
 
-    const handleDeleteLandmark = async (landmarkID,locationID) => {
+    const handleDeleteLandmark = async () => {
         const { data } = await DeleteLandmark({ variables: { _id: landmarkID, locationID: locationID},
             refetchQueries: [{ query: GET_DB_REGION,variables: { _id: id } }] });
         console.log(data);
+        toggleShowDelete(false);
     }
 
     const handleOnChange = (e) => {
         setInitName(e.target.value);
+    }
+
+    const prepDelete = (id, locID) => {
+        setLandmarkID(id);
+        setLocationID(locID);
+        toggleShowDelete(true);
     }
 
     return (
@@ -83,15 +97,23 @@ const RegionViewer = (props) => {
                 <WCol size="6">
                     <h3 style={{color:"white"}}>Region Landmarks:</h3>
                     <WSidebar>
-                        {region.landmarks  ? region.landmarks.map((landmark) => (
-                            <div className="table-text landmark-entry map-entry" style={{display:"flex",justifyContent:"start"}}>
+                        {region.landmarks  ? region.landmarks.map((landmark) => {
+                            if(landmark.locationID == region._id){
+                            return <div className="landmark-entry" style={{display:"flex",justifyContent:"start"}}>
                                 <div>
                                 {landmark.name}
                                 </div>
-                                <WButton className="landmark-delete" wType="texted" onClick={() => handleDeleteLandmark(landmark._id,landmark.locationID)}>
+                                <WButton className="landmark-delete" wType="texted" hoverAnimation="lighten"
+                                color="danger" onClick={() => prepDelete(landmark._id,landmark.locationID)}>
                                     <i className="material-icons">close</i>
                                 </WButton></div>
-                        )) : <div></div>}
+                            }
+                            else {
+                                return <div className="landmark-entry-disable" style={{display:"flex",justifyContent:"start"}}>
+                                    {landmark.name}
+                                </div>
+                            }
+                        }) : <div></div>}
                     </WSidebar>
                     <div className="add-landmark">
                         <WButton wType="texted" id="edit-parent-button" onClick={() => handleAddLandmark()}>
@@ -101,6 +123,30 @@ const RegionViewer = (props) => {
                     </div>
                 </WCol>
             </WRow>
+            {showDelete ? <WModal visible={true} cover={true}>
+					<WMHeader>
+					<div className="modal-header">
+						Delete landmark?
+					<div className="modal-close" onClick={() => {toggleShowDelete(false)}}>x</div>
+				</div>
+					</WMHeader>
+					<WMFooter>
+						<WRow>
+							<WCol size="5">
+								<WButton span className="modal-button" onClick={() => {handleDeleteLandmark()}}clickAnimation="ripple-light" hoverAnimation="lighten" shape="rounded" color="danger">
+									Delete
+								</WButton>
+							</WCol>
+							<WCol size="2"></WCol>
+							<WCol size="5">
+								<WButton span onClick={() => {toggleShowDelete(false);}} className="modal-button cancel-button" wType="texted" hoverAnimation="darken" shape="rounded">
+									Cancel
+								</WButton>
+							</WCol>
+						</WRow>
+            		</WMFooter>
+				</WModal> : 
+			<></>}
         </div>
     )
 }
