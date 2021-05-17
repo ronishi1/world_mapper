@@ -74,6 +74,7 @@ const SpreadsheetEntry = (props) => {
     const handleNavigateViewer = () => {
         props.navigateViewerCallback(region._id);
     }
+    
     return (
         <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">

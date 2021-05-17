@@ -131,7 +131,7 @@ const RegionViewer = (props) => {
                             }
                             else {
                                 return <div className="landmark-entry-disable" style={{display:"flex",justifyContent:"start"}}>
-                                    {landmark.name}
+                                    {landmark.name + " (" + landmark.locationName + ")"} 
                                 </div>
                             }
                         }) : <div></div>}

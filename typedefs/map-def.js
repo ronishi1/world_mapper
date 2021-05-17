@@ -40,7 +40,7 @@ const typeDefs = gql `
 		parentName: String
 		capital: String
         leader: String
-		landmarks: [String]
+		landmarks: [LandmarkInput]
 		regions: [String]
 	}
 	input LandmarkInput {

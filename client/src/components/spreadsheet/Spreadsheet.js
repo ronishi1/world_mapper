@@ -25,6 +25,8 @@ const Spreadsheet = (props) => {
 
     const [showDelete, toggleShowDelete] = useState(false);
     const [toDelete, setToDelete] = useState({});
+    const [redoSize, setRedoSize] = useState(0);
+    const [undoSize, setUndoSize] = useState(0);
 
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: id },fetchPolicy:"network-only",
@@ -51,6 +53,8 @@ const Spreadsheet = (props) => {
 
 	const tpsRedo = async () => {
 		const retVal = await props.tps.doTransaction();
+        setRedoSize(props.tps.getRedoSize());
+        setUndoSize(props.tps.getUndoSize());
 		refetchMaps(refetch);
 		return retVal;
 	}
@@ -86,6 +90,12 @@ const Spreadsheet = (props) => {
         delete current.__typename;
         let parent = {...region}
         delete parent.__typename;
+        let res = [];
+        parent.landmarks.forEach((landmark) => {
+			let {__typename,...temp} = landmark;
+			res.push(temp)
+		});
+        parent.landmarks = res;
         let transaction = new DeleteRegion_Transaction(current,parent, DeleteRegion, UnDeleteRegion);
         props.tps.addTransaction(transaction);
         toggleShowDelete(false);
@@ -118,6 +128,7 @@ const Spreadsheet = (props) => {
     const handleNavigateViewer = (cur) => {
         props.navigateViewerCallback(cur,region);
     }
+
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
@@ -126,10 +137,10 @@ const Spreadsheet = (props) => {
                         <WButton className="spreadsheet-header-button" onClick={() => {addSubregion()}}wType="texted">
                             <i style={{fontSize:"33px"}} className="material-icons">add</i>
                         </WButton> 
-                        <WButton onClick={() => {tpsUndo()}}className="spreadsheet-header-button" wType="texted" disabled={!props.tps.hasTransactionToUndo()}>
+                        <WButton onClick={() => {tpsUndo()}}className="spreadsheet-header-button" wType="texted" disabled={props.tps.getUndoSize() == 0}>
                             <i style={{fontSize:"33px"}} className="material-icons">undo</i>
                         </WButton>                  
-                        <WButton onClick={() => {tpsRedo()}} className="spreadsheet-header-button" wType="texted" disabled={!props.tps.hasTransactionToRedo()}>
+                        <WButton onClick={() => {tpsRedo()}} className="spreadsheet-header-button" wType="texted" disabled={props.tps.getRedoSize() == 0}>
                             <i style={{fontSize:"33px"}} className="material-icons">redo</i>
                         </WButton>                                                 
                         </div>

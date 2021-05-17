@@ -70,6 +70,12 @@ export class AddRegion_Transaction extends jsTPS_Transaction {
     }
 
     async undoTransaction() {
+        let res = [];
+        this.parent.landmarks.forEach((landmark) => {
+			let {__typename,...temp} = landmark;
+			res.push(temp)
+		});
+        this.parent.landmarks = res;
         const { data } = await this.deleteFunction({variables: {regionID: this._id, parentRegion: this.parent}
             ,refetchQueries:[{query:GET_DB_REGION,variables:{_id:this.map.parent}}]});
         return data;
