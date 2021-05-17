@@ -143,6 +143,11 @@ module.exports = {
 			});
 			let objectId = new ObjectId(locationID);
 			let found = await Map.findOne({_id: objectId});
+			for(let i = 0;i<found.landmarks.length;i++){
+				if(found.landmarks[i].name == name){
+					return "duplicate";
+				}
+			}
 			found.landmarks.push(newLandmark);
 			let updated = await Map.updateOne({_id:objectId},{landmarks:found.landmarks})
 			let parentId;

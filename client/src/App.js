@@ -219,7 +219,7 @@ const App = () => {
 							<Route
 								path="/view/:id"
 								render={()=> 
-								<RegionViewer navigateOffViewerCallback={navigateOffViewerCallback}/>
+								<RegionViewer tps={transactionStack} navigateOffViewerCallback={navigateOffViewerCallback}/>
 							}
 							/>
 						</Switch>

@@ -6,6 +6,53 @@ export class jsTPS_Transaction {
     undoTransaction () {};
 }
 
+export class AddLandmark_Transaction extends jsTPS_Transaction {
+    constructor(_id,name,locationName,locationID,addFunc,deleteFunc){
+        super();
+        this._id = _id;
+        this.name = name;
+        this.locationName = locationName;
+        this.locationID = locationID;
+        this.addFunction = addFunc;
+        this.deleteFunction = deleteFunc;
+    }
+
+    async doTransaction(){
+        const { data } = await this.addFunction({ variables: { _id: this._id, name:this.name, locationName:this.locationName,locationID: this.locationID},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: this.locationID } }] });
+        return data;
+    }
+
+    async undoTransaction(){
+        const { data } = await this.deleteFunction( {variables: {_id:this._id, locationID: this.locationID},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: this.locationID } }] });
+        return data;
+    }
+}
+
+export class DeleteLandmark_Transaction extends jsTPS_Transaction {
+    constructor(_id,name,locationName,locationID,addFunc,deleteFunc){
+        super();
+        this._id = _id;
+        this.name = name;
+        this.locationName = locationName;
+        this.locationID = locationID;
+        this.addFunction = addFunc;
+        this.deleteFunction = deleteFunc;
+    }
+
+    async doTransaction(){
+        const { data } = await this.deleteFunction( {variables: {_id:this._id, locationID: this.locationID},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: this.locationID } }] });
+        return data;
+    }
+    
+    async undoTransaction(){
+        const { data } = await this.addFunction({ variables: { _id: this._id, name:this.name, locationName:this.locationName,locationID: this.locationID},
+            refetchQueries: [{ query: GET_DB_REGION,variables: { _id: this.locationID } }] });
+        return data;
+    }
+}
 export class AddRegion_Transaction extends jsTPS_Transaction {
     constructor(_id, map, parent, addFunc, deleteFunc) {
         super()
