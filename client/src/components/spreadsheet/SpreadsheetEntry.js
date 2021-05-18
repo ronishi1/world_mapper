@@ -124,10 +124,10 @@ const SpreadsheetEntry = (props) => {
                     </div>
                 }
             </WCol>
-            <WCol size="1" className="table-text">
-                Region Flag
+            <WCol size="2" className="table-text">
+                <img className="spreadsheet-flag" src={"/" + region.name + " Flag.png"} alt="No region flag"></img> 
             </WCol>
-            <WCol size="3" className="table-text">
+            <WCol size="2" className="table-text">
                 <div className="map-click-entry" onClick={() => {history.push("/view/" + region._id);handleNavigateViewer()}}>
                     {(region.landmarks == null || region.landmarks.length == 0) ? "No landmarks" : region.landmarks[0].name + ",..." }
                 </div>

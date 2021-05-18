@@ -258,3 +258,15 @@ html {
 a {
     padding: 0rem 0rem !important;
 }
+
+.spreadsheet-flag {
+    height:50px;
+    width:100px;
+    object-fit:contain;
+}
+
+.viewer-flag {
+    height:125px;
+    width:250px;
+    object-fit:contain;
+}

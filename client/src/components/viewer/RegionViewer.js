@@ -137,7 +137,9 @@ const RegionViewer = (props) => {
                         <WButton onClick={() => {tpsRedo()}} className="spreadsheet-header-button" wType="texted" disabled={!props.tps.hasTransactionToRedo()}>
                             <i style={{fontSize:"33px"}} className="material-icons">redo</i>
                         </WButton>     
-                    <h3 className="region-viewer-text">FLAG IMAGE GOES HERE</h3>
+                    <div>
+                        <img className="viewer-flag" src={"/" + region.name + " Flag.png"} alt="No region flag"></img> 
+                    </div>
                     <h3 className="region-viewer-text">Region Name: {region.name}</h3>
                     <h3 className="region-viewer-text">
                         Parent Region: <div style={{display:"inline-block"}} 
