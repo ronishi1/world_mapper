@@ -129,6 +129,22 @@ const Spreadsheet = (props) => {
         props.navigateViewerCallback(cur,region);
     }
 
+    let handleKeyDown = (e) => {
+		if(e.keyCode == 90 && e.ctrlKey){
+		  tpsUndo()
+		}
+		else if(e.keyCode == 89 && e.ctrlKey){
+		  tpsRedo()
+		}
+	  }
+	  
+	useEffect(() => {
+		window.addEventListener('keydown', handleKeyDown)
+  		return () => {
+    		window.removeEventListener('keydown', handleKeyDown)
+  		}
+	},[handleKeyDown,props.tps]);
+    
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
