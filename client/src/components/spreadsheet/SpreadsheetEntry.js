@@ -22,6 +22,7 @@ const SpreadsheetEntry = (props) => {
     const [editingName, toggleName] = useState(false);
     const [editingLeader, toggleLeader] = useState(false);
     const [editingCapital, toggleCapital] = useState(false);
+    const [current, setCurrent] = useState("");
 
     const { loading, error, data, refetch } = useQuery(GET_DB_REGION, {
         variables: { _id: props._id },fetchPolicy:"network-only",
@@ -48,7 +49,8 @@ const SpreadsheetEntry = (props) => {
         const newName = e.target.value ? e.target.value : 'Unnamed';
         const prevName = region.name;
         props.editRegion(region._id, 'name', newName, prevName);
-        refetchMaps(refetch);
+        setCurrent("");
+        // refetchMaps(refetch);
     }
 
     const handleLeaderEdit = async (e) => {
@@ -56,7 +58,8 @@ const SpreadsheetEntry = (props) => {
         const newLeader = e.target.value ? e.target.value : 'Unnamed';
         const prevLeader = region.leader;
         props.editRegion(region._id, 'leader', newLeader, prevLeader);
-        refetchMaps(refetch);
+        setCurrent("");
+        // refetchMaps(refetch);
     }
 
     const handleCapitalEdit = async (e) => {
@@ -64,7 +67,8 @@ const SpreadsheetEntry = (props) => {
         const newCapital = e.target.value ? e.target.value : 'Unnamed';
         const prevCapital = region.capital;
         props.editRegion(region._id, 'capital', newCapital, prevCapital);
-        refetchMaps(refetch);
+        setCurrent("");
+        // refetchMaps(refetch);
     }
 
     const handleClickDelete = () => {
@@ -75,6 +79,55 @@ const SpreadsheetEntry = (props) => {
         props.navigateViewerCallback(region._id);
     }
     
+    const goLeft = () => {
+        if(current == "capital"){
+            setCurrent("name")
+            toggleName(true);
+        }
+        else if (current == "leader"){
+            setCurrent("capital")
+            toggleCapital(true);
+        }
+
+    }
+
+    const goRight = () => {
+        if(current == "name"){
+            setCurrent("capital");
+            toggleCapital(true);
+        }
+        else if (current == "capital"){
+            setCurrent("leader");
+            toggleLeader(true);
+        }
+    }
+
+    const goUp = () => {
+        
+    }
+
+    let handleKeyDown = (e) => {
+		if(e.keyCode == 37){
+            e.target.blur();
+		    goLeft();
+		}
+		else if(e.keyCode == 39){
+            e.target.blur();
+            goRight();
+		}
+        else if(e.keycode == 38) {
+            e.target.blur()
+            goUp();
+        }
+	  }
+	  
+	useEffect(() => {
+		window.addEventListener('keydown', handleKeyDown)
+  		return () => {
+    		window.removeEventListener('keydown', handleKeyDown)
+  		}
+	},[handleKeyDown,props.tps]);
+
     return (
         <WRow className="spreadsheet-entry">
             <WCol size="3" className="table-text">
@@ -90,7 +143,7 @@ const SpreadsheetEntry = (props) => {
                             {region.name}
                         </div>
                         <div>
-                            <WButton onClick={() => {toggleName(!editingName)}} wType="texted" className="table-header-button">
+                            <WButton onClick={() => {toggleName(!editingName);setCurrent("name")}} wType="texted" className="table-header-button">
                                 <i className="material-icons">edit</i>
                             </WButton>
                             <WButton onClick={() => {handleClickDelete()}} wType="texted" className="table-header-button">
@@ -107,7 +160,7 @@ const SpreadsheetEntry = (props) => {
                         autoFocus={true} type='text'>
                     </WInput> 
                     :
-                    <div onClick={() => toggleCapital(!editingCapital)}
+                    <div onClick={() => {toggleCapital(!editingCapital);setCurrent("capital")}}
                             >{region.capital}
                     </div>
                 }
@@ -119,7 +172,7 @@ const SpreadsheetEntry = (props) => {
                         autoFocus={true} type='text'>
                     </WInput> 
                     :
-                    <div onClick={() => toggleLeader(!editingLeader)}
+                    <div onClick={() => {toggleLeader(!editingLeader);setCurrent("capital")}}
                             >{region.leader}
                     </div>
                 }

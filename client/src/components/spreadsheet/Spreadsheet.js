@@ -144,7 +144,7 @@ const Spreadsheet = (props) => {
     		window.removeEventListener('keydown', handleKeyDown)
   		}
 	},[handleKeyDown,props.tps]);
-    
+
 	return (
 		<div>
             <div style={{margin:"30px auto",textAlign:"center",width:"80%"}}>
